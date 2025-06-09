@@ -5,8 +5,6 @@
 #include <source_location>
 #include <string_view>
 
-namespace testing {
-
 template <typename A, typename B, typename CharT = char>
   requires(std::equality_comparable_with<A, B>
       && std::formattable<A, CharT>
@@ -26,5 +24,3 @@ void ASSERT_EQ(
     exit(1);
   }
 }
-
-} // namespace testing

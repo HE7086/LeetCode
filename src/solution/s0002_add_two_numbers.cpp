@@ -1,6 +1,8 @@
 #include <utils/test.hpp>
 #include <utils/list.hpp>
 
+using namespace std;
+
 //==============================================================================
 
 static ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
@@ -38,8 +40,6 @@ static ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
 //==============================================================================
 
 int main() {
-  using namespace testing;
-
   {
     SafeList *a = make_nodes({2, 4, 3});
     SafeList *b = make_nodes({5, 6, 4});
