@@ -10,13 +10,13 @@ struct ListNode {
   ListNode(int x, ListNode *next) : val(x), next(next) {}
 
   bool operator==(const ListNode other) const {
-    if (val != other.val) {
+    if (val != other.val ||
+        next != nullptr && other.next == nullptr ||
+        next == nullptr && other.next != nullptr
+    ) {
       return false;
     }
     if (next != nullptr) {
-      if (other.next == nullptr) {
-        return false;
-      }
       return next->operator==(*other.next);
     }
     return true;
