@@ -1,0 +1,10 @@
+---
+BasedOnStyle: LLVM
+ColumnLimit: 120
+AlignAfterOpenBracket: Align
+BinPackArguments: false
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowAllArgumentsOnNextLine: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+AlignArrayOfStructures: Left
+---
