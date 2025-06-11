@@ -1,7 +1,8 @@
 alias b := build
-alias t := test
 alias c := check
+alias d := debug
 alias f := fetch
+alias t := test
 
 build MODE="Debug":
   cmake -B build -G "Ninja Multi-Config"
@@ -25,6 +26,20 @@ build-fetcher:
 
 fetch ARG="": build-fetcher
   build/src/Release/fetcher {{ARG}}
+
+debug ARG="": build
+  #!/bin/bash
+  if [ -z "{{ARG}}" ]; then
+    TARGET=$(ls -t1 src/solution | head -n 1 | grep -Po '(?<=^s)([0-9]+)')
+  else
+    TARGET="{{ARG}}"
+  fi
+  ID=$(printf "s%04d" "$TARGET")
+  FUNC=$(find src/solution -name "$ID*" -exec cat {} \; \
+    | sed -n '/\/\/=/,/\/\/=/p' \
+    | grep -Po '(?<=\S\s)(\w+)(?=\(.*\) {)' \
+    | tail -n 1)
+  find build/src/Debug -name "$ID*" -exec gdb {} -ex "b $FUNC" \;
 
 clean:
   rm -rf .cache build
