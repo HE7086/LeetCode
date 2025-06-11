@@ -39,8 +39,8 @@ static json build_graphql_payload(const std::string &titleSlug) {
   return payload;
 }
 
-static std::string code_template(uint64_t id, std::string title, std::string content, std::string url, std::string code,
-                                 std::string solution_id) {
+static std::string code_template(uint64_t id, std::string title, std::string content, std::string url,
+                                 std::string include, std::string code, std::string solution_id) {
   return std::format(R"(/******************************
 Question {}: {}
 
@@ -48,9 +48,7 @@ Question {}: {}
 URL: {}
 ******************************/
 
-#include <vector>
-#include <gtest/gtest.h>
-#include <utils/list.hpp>
+{}#include <gtest/gtest.h>
 
 using namespace std;
 
@@ -68,6 +66,7 @@ TEST(Test, {}) {{
                      title,
                      content,
                      url,
+                     include,
                      code,
                      solution_id);
 }
@@ -107,7 +106,7 @@ static std::string parse_content(std::string content) {
 }
 
 static std::string add_return(std::string type, std::string code) {
-  auto re = std::regex("\\{\\s*\\}");
+  auto re = std::regex("\\{\n\\s*\\}");
 
   auto map = std::map<std::string, std::string>{
       {"ListNode",            "{\n        return nullptr;\n    }"},
@@ -142,6 +141,32 @@ static std::string add_return(std::string type, std::string code) {
   }
 
   return code;
+}
+
+static std::string get_includes(std::vector<std::string> params) {
+  auto result = std::string{};
+  auto vector = false;
+  auto list = false;
+
+  for (const auto &param : params) {
+    if (param.contains("ListNode")) {
+      list = true;
+    }
+    if (param.contains("[]")) {
+      vector = true;
+    }
+    if (param.contains("list<")) {
+      vector = true;
+    }
+  }
+  if (vector) {
+    result += "#include <vector>\n";
+  }
+  if (list) {
+    result += "#include <utils/list.hpp>\n";
+  }
+
+  return result;
 }
 
 int main(int argc, char *argv[]) {
@@ -225,11 +250,18 @@ int main(int argc, char *argv[]) {
     }
   }
   auto metaData = json::parse(question_data["metaData"].get<std::string>());
+  auto params = std::vector<std::string>{};
+  for (auto param : metaData["params"]) {
+    params.emplace_back(param["type"]);
+  }
   auto return_type = metaData["return"]["type"].get<std::string>();
+  params.push_back(return_type);
   code = add_return(return_type, code);
+  auto include = get_includes(params);
   auto content = parse_content(std::move(question_data["content"]));
   auto url = std::format("https://leetcode.com/problems/{}", title_slug);
-  auto code_template_filled = code_template(question_id, stat["question__title"], content, url, code, solution_id);
+  auto code_template_filled =
+      code_template(question_id, stat["question__title"], content, url, include, code, solution_id);
 #ifdef TEST
   std::println("{}", code_template_filled);
   return 0;
