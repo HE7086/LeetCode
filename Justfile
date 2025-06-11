@@ -8,7 +8,7 @@ build MODE="Debug":
   cmake --build build --config {{MODE}}
 
 test *ARGS="": build
-  GTEST_COLOR=1 ctest --test-dir build/src --output-on-failure {{ARGS}}
+  GTEST_COLOR=1 ctest --test-dir build --output-on-failure {{ARGS}}
 
 check ARG="": build
   #!/bin/bash
@@ -17,7 +17,7 @@ check ARG="": build
   else
     TARGET="{{ARG}}"
   fi
-  GTEST_COLOR=1 ctest --test-dir build/src --output-on-failure -R $(printf "Test.s%04d" "$TARGET")
+  GTEST_COLOR=1 ctest --test-dir build --output-on-failure -R $(printf "Test.s%04d" "$TARGET")
 
 build-fetcher:
   cmake -B build -G "Ninja Multi-Config"

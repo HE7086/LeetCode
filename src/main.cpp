@@ -9,14 +9,14 @@
 #include <regex>
 #include <span>
 
+#include <nlohmann/json.hpp>
 #include <cpr/cpr.h>
 #include <cpr/response.h>
-#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-static json build_graphql_payload(const std::string &titleSlug) {
+static json build_graphql_payload(std::string titleSlug) {
   std::string query = R"(
     query questionData($titleSlug: String!) {
       question(titleSlug: $titleSlug) {
@@ -32,16 +32,24 @@ static json build_graphql_payload(const std::string &titleSlug) {
     }
   )";
   json payload = {
-      {"query",         query                     },
-      {"variables",     {{"titleSlug", titleSlug}}},
-      {"operationName", "questionData"            }
+    {"query",         query                     },
+    {"variables",     {{"titleSlug", titleSlug}}},
+    {"operationName", "questionData"            }
   };
   return payload;
 }
 
-static std::string code_template(uint64_t id, std::string title, std::string content, std::string url,
-                                 std::string include, std::string code, std::string solution_id) {
-  return std::format(R"(/******************************
+static std::string code_template(
+  uint64_t id,
+  std::string title,
+  std::string content,
+  std::string url,
+  std::string include,
+  std::string code,
+  std::string solution_id
+) {
+  return std::format(
+    R"(/******************************
 Question {}: {}
 
 {}
@@ -60,15 +68,16 @@ using namespace std;
 
 TEST(Test, {}) {{
   auto s = Solution{{}};
-  EXPECT_EQ(1, 1);
+  EXPECT_EQ(0, 1);
 }})",
-                     id,
-                     title,
-                     content,
-                     url,
-                     include,
-                     code,
-                     solution_id);
+    id,
+    title,
+    content,
+    url,
+    include,
+    code,
+    solution_id
+  );
 }
 
 // assume input is well-formed html
@@ -86,16 +95,16 @@ static std::string parse_content(std::string content) {
 
   // unescape characters
   auto entityMap = std::map<std::string, std::string>{
-      {"&nbsp;",  ""  },
-      {"&lt;",    "<" },
-      {"&gt;",    ">" },
-      {"&amp;",   "&" },
-      {"&quot;",  "\""},
-      {"&apos;",  "'" },
-      {"&minus;", "-" },
-      {"\n\n",    "\n"},
+    {"&nbsp;",  ""  },
+    {"&lt;",    "<" },
+    {"&gt;",    ">" },
+    {"&amp;",   "&" },
+    {"&quot;",  "\""},
+    {"&apos;",  "'" },
+    {"&minus;", "-" },
+    {"\n\n",    "\n"},
   };
-  for (auto const &[entity, replacement] : entityMap) {
+  for (auto const& [entity, replacement] : entityMap) {
     size_t start_pos = 0;
     while ((start_pos = content.find(entity, start_pos)) != std::string::npos) {
       content.replace(start_pos, entity.length(), replacement);
@@ -109,29 +118,29 @@ static std::string add_return(std::string type, std::string code) {
   auto re = std::regex("\\{\n\\s*\\}");
 
   auto map = std::map<std::string, std::string>{
-      {"ListNode",            "{\n        return nullptr;\n    }"},
-      {"ListNode[]",          "{\n        return {};\n    }"     },
-      {"TreeNode",            "{\n        return nullptr;\n    }"},
-      {"boolean",             "{\n        return false;\n    }"  },
-      {"character",           "{\n        return '0';\n    }"    },
-      {"character[][]",       "{\n        return {};\n    }"     },
-      {"double",              "{\n        return 0;\n    }"      },
-      {"double[]",            "{\n        return {};\n    }"     },
-      {"int[]",               "{\n        return nullptr;\n    }"},
-      {"integer",             "{\n        return 0;\n    }"      },
-      {"integer[]",           "{\n        return {};\n    }"     },
-      {"integer[][]",         "{\n        return {};\n    }"     },
-      {"integer[][]",         "{\n        return {};\n    }"     },
-      {"string",              "{\n        return \"\";\n    }"   },
-      {"string[]",            "{\n        return {};\n    }"     },
-      {"list<String>",        "{\n        return {};\n    }"     },
-      {"list<string>",        "{\n        return {};\n    }"     },
-      {"list<TreeNode>",      "{\n        return {};\n    }"     },
-      {"list<boolean>",       "{\n        return {};\n    }"     },
-      {"list<double>",        "{\n        return {};\n    }"     },
-      {"list<integer>",       "{\n        return {};\n    }"     },
-      {"list<list<integer>>", "{\n        return {};\n    }"     },
-      {"list<list<string>>",  "{\n        return {};\n    }"     },
+    {"ListNode",            "{\n        return nullptr;\n    }"},
+    {"ListNode[]",          "{\n        return {};\n    }"     },
+    {"TreeNode",            "{\n        return nullptr;\n    }"},
+    {"boolean",             "{\n        return false;\n    }"  },
+    {"character",           "{\n        return '0';\n    }"    },
+    {"character[][]",       "{\n        return {};\n    }"     },
+    {"double",              "{\n        return 0;\n    }"      },
+    {"double[]",            "{\n        return {};\n    }"     },
+    {"int[]",               "{\n        return nullptr;\n    }"},
+    {"integer",             "{\n        return 0;\n    }"      },
+    {"integer[]",           "{\n        return {};\n    }"     },
+    {"integer[][]",         "{\n        return {};\n    }"     },
+    {"integer[][]",         "{\n        return {};\n    }"     },
+    {"string",              "{\n        return \"\";\n    }"   },
+    {"string[]",            "{\n        return {};\n    }"     },
+    {"list<String>",        "{\n        return {};\n    }"     },
+    {"list<string>",        "{\n        return {};\n    }"     },
+    {"list<TreeNode>",      "{\n        return {};\n    }"     },
+    {"list<boolean>",       "{\n        return {};\n    }"     },
+    {"list<double>",        "{\n        return {};\n    }"     },
+    {"list<integer>",       "{\n        return {};\n    }"     },
+    {"list<list<integer>>", "{\n        return {};\n    }"     },
+    {"list<list<string>>",  "{\n        return {};\n    }"     },
   };
 
   if (map.contains(type)) {
@@ -148,7 +157,7 @@ static std::string get_includes(std::vector<std::string> params) {
   auto vector = false;
   auto list = false;
 
-  for (const auto &param : params) {
+  for (const auto& param : params) {
     if (param.contains("ListNode")) {
       list = true;
     }
@@ -169,10 +178,10 @@ static std::string get_includes(std::vector<std::string> params) {
   return result;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   // parse args
   const auto args =
-      std::span{argv, argv + argc} | std::views::transform([](const char *str) { return std::string_view(str); });
+    std::span{argv, argv + argc} | std::views::transform([](const char* str) { return std::string_view(str); });
   if (args.size() <= 1) {
     std::println(stderr, "Usage: {} <id>", args[0]);
     return 0;
@@ -201,7 +210,7 @@ int main(int argc, char *argv[]) {
   json problems = json::parse(cache)["stat_status_pairs"];
   cache.close();
 
-  auto question = std::find_if(problems.begin(), problems.end(), [question_id](const auto &p) {
+  auto question = std::find_if(problems.begin(), problems.end(), [question_id](const auto& p) {
     return p["stat"]["question_id"] == question_id;
   });
   if (question == problems.end()) {
@@ -225,12 +234,13 @@ int main(int argc, char *argv[]) {
   }
 
   // get question data
+  // clang-format off
   cpr::Response r = cpr::Post(
-      cpr::Url{
-          "https://leetcode.com/graphql"
-  },
-      cpr::Body{build_graphql_payload(title_slug).dump()},
-      cpr::Header{{"Content-Type", "application/json"}});
+    cpr::Url{"https://leetcode.com/graphql"},
+    cpr::Body{build_graphql_payload(title_slug).dump()},
+    cpr::Header{{"Content-Type", "application/json"}}
+  );
+  // clang-format on
 
 #ifdef TEST
   std::println("{}", r.text);
@@ -243,7 +253,7 @@ int main(int argc, char *argv[]) {
 
   // get code snippets
   std::string code;
-  for (const auto &snippet : question_data["codeSnippets"]) {
+  for (const auto& snippet : question_data["codeSnippets"]) {
     if (snippet["lang"] == "C++") {
       code = snippet["code"];
       break;
@@ -261,7 +271,7 @@ int main(int argc, char *argv[]) {
   auto content = parse_content(std::move(question_data["content"]));
   auto url = std::format("https://leetcode.com/problems/{}", title_slug);
   auto code_template_filled =
-      code_template(question_id, stat["question__title"], content, url, include, code, solution_id);
+    code_template(question_id, stat["question__title"], content, url, include, code, solution_id);
 #ifdef TEST
   std::println("{}", code_template_filled);
   return 0;

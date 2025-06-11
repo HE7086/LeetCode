@@ -30,8 +30,8 @@ Constraints:
 URL: https://leetcode.com/problems/add-two-numbers
 ******************************/
 
-#include <gtest/gtest.h>
 #include <utils/list.hpp>
+#include <gtest/gtest.h>
 
 using namespace std;
 
@@ -39,10 +39,10 @@ using namespace std;
 
 class Solution {
 public:
-  ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
+  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
     int carry = 0;
-    ListNode *l3 = new ListNode();
-    ListNode *ptr = l3;
+    ListNode* l3 = new ListNode();
+    ListNode* ptr = l3;
 
     while (l1 != nullptr || l2 != nullptr) {
       int sum = carry;
@@ -77,21 +77,21 @@ public:
 TEST(Test, s0002_add_two_numbers) {
   auto s = Solution{};
   {
-    SafeList *a = make_nodes({2, 4, 3});
-    SafeList *b = make_nodes({5, 6, 4});
-    SafeList *c = make_nodes({7, 0, 8});
+    SafeList* a = make_nodes({2, 4, 3});
+    SafeList* b = make_nodes({5, 6, 4});
+    SafeList* c = make_nodes({7, 0, 8});
     EXPECT_EQ(*c, *s.addTwoNumbers(a, b));
   }
   {
-    SafeList *a = make_nodes({0});
-    SafeList *b = make_nodes({0});
-    SafeList *c = make_nodes({0});
+    SafeList* a = make_nodes({0});
+    SafeList* b = make_nodes({0});
+    SafeList* c = make_nodes({0});
     EXPECT_EQ(*c, *s.addTwoNumbers(a, b));
   }
   {
-    SafeList *a = make_nodes({9, 9, 9, 9, 9, 9, 9});
-    SafeList *b = make_nodes({9, 9, 9, 9});
-    SafeList *c = make_nodes({8, 9, 9, 9, 0, 0, 0, 1});
+    SafeList* a = make_nodes({9, 9, 9, 9, 9, 9, 9});
+    SafeList* b = make_nodes({9, 9, 9, 9});
+    SafeList* c = make_nodes({8, 9, 9, 9, 0, 0, 0, 1});
     EXPECT_EQ(*c, *s.addTwoNumbers(a, b));
   }
 }

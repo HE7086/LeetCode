@@ -33,7 +33,6 @@ URL: https://leetcode.com/problems/longest-substring-without-repeating-character
 
 #include <algorithm>
 #include <unordered_set>
-
 #include <gtest/gtest.h>
 
 using namespace std;

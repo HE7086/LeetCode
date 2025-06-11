@@ -24,10 +24,10 @@ Output: [0,1]
 
 Constraints:
 
-	2 <= nums.length <= 104
-	-109 <= nums[i] <= 109
-	-109 <= target <= 109
-	Only one valid answer exists.
+        2 <= nums.length <= 104
+        -109 <= nums[i] <= 109
+        -109 <= target <= 109
+        Only one valid answer exists.
 
 
 Follow-up:Can you come up with an algorithm that is less than O(n2)time complexity?
@@ -36,7 +36,6 @@ URL: https://leetcode.com/problems/two-sum
 
 #include <unordered_map>
 #include <vector>
-
 #include <gtest/gtest.h>
 
 using namespace std;
@@ -45,7 +44,7 @@ using namespace std;
 
 class Solution {
 public:
-  vector<int> twoSum(vector<int> const &nums, int target) {
+  vector<int> twoSum(vector<int> const& nums, int target) {
     auto map = unordered_map<int, int>{};
     for (int i = 0; i < nums.size(); ++i) {
       int n = target - nums[i];

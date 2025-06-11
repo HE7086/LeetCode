@@ -2,7 +2,6 @@ include(FetchContent)
 
 #==================== solution ====================
 
-enable_testing()
 find_package(GTest)
 if(NOT GTest_FOUND)
   FetchContent_Declare(googletest
@@ -50,3 +49,4 @@ target_link_libraries(fetcher PRIVATE
 target_compile_options(fetcher PRIVATE -Wall -Wextra -Wpedantic -Werror)
 set_property(TARGET fetcher PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
 set_property(TARGET fetcher PROPERTY POSITION_INDEPENDENT_CODE TRUE)
+set_property(TARGET fetcher PROPERTY EXCLUDE_FROM_ALL TRUE)

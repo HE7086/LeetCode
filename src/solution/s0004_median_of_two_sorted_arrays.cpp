@@ -31,7 +31,6 @@ URL: https://leetcode.com/problems/median-of-two-sorted-arrays
 
 #include <vector>
 #include <gtest/gtest.h>
-#include <utils/list.hpp>
 
 using namespace std;
 
@@ -39,14 +38,15 @@ using namespace std;
 
 class Solution {
 public:
-    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        return 0;
-    }
+  double findMedianSortedArrays(vector<int> const& nums1, vector<int> const& nums2) {
+    return 0;
+  }
 };
 
 //==============================================================================
 
 TEST(Test, s0004_median_of_two_sorted_arrays) {
   auto s = Solution{};
-  EXPECT_EQ(1, 1);
+  EXPECT_EQ(2.0, s.findMedianSortedArrays({1, 3}, {2}));
+  EXPECT_EQ(2.5, s.findMedianSortedArrays({1, 2}, {3, 4}));
 }
