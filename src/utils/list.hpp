@@ -11,8 +11,8 @@ struct ListNode {
 
   bool operator==(const ListNode other) const {
     if (val != other.val ||
-        next != nullptr && other.next == nullptr ||
-        next == nullptr && other.next != nullptr
+        (next != nullptr && other.next == nullptr) ||
+        (next == nullptr && other.next != nullptr)
     ) {
       return false;
     }
@@ -23,7 +23,7 @@ struct ListNode {
   }
 };
 
-static ListNode *make_nodes(std::initializer_list<int> list) {
+static inline ListNode *make_nodes(std::initializer_list<int> list) {
   if (list.size() == 0) {
     return nullptr;
   }
@@ -37,14 +37,14 @@ static ListNode *make_nodes(std::initializer_list<int> list) {
   return head;
 }
 
-static void delete_nodes(ListNode *node) {
+static inline void delete_nodes(ListNode *node) {
   if (node->next != nullptr) {
     delete_nodes(node->next);
   }
   delete node;
 }
 
-static void clean_up(ListNode **node) { delete_nodes(*node); }
+static inline void clean_up(ListNode **node) { delete_nodes(*node); }
 
 template <> class std::formatter<ListNode> {
 public:
