@@ -16,40 +16,23 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-static json build_graphql_payload(std::string titleSlug) {
-  std::string query = R"(
-    query questionData($titleSlug: String!) {
-      question(titleSlug: $titleSlug) {
-        content
-        exampleTestcaseList
-        metaData
-        isPaidOnly
-        codeSnippets {
-          lang
-          code
-        }
-      }
+static constexpr const auto LEETCODE_API = "https://leetcode.com/api/problems/algorithms";
+static constexpr const auto LEETCODE_GRAPHQL = "https://leetcode.com/graphql";
+static constexpr const auto LEETCODE_PROBLEMS = "https://leetcode.com/problems";
+static constexpr const auto GRAPHQL_QUERY = R"(
+query questionData($titleSlug: String!) {
+  question(titleSlug: $titleSlug) {
+    content
+    exampleTestcaseList
+    metaData
+    isPaidOnly
+    codeSnippets {
+      lang
+      code
     }
-  )";
-  json payload = {
-    {"query",         query                     },
-    {"variables",     {{"titleSlug", titleSlug}}},
-    {"operationName", "questionData"            }
-  };
-  return payload;
-}
-
-static std::string code_template(
-  uint64_t id,
-  std::string title,
-  std::string content,
-  std::string url,
-  std::string include,
-  std::string code,
-  std::string solution_id
-) {
-  return std::format(
-    R"(/******************************
+  }
+})";
+static constexpr const auto CODE_TEMPLATE = R"(/******************************
 Question {}: {}
 
 {}
@@ -69,15 +52,15 @@ using namespace std;
 TEST(Test, {}) {{
   auto s = Solution{{}};
   EXPECT_EQ(0, 1);
-}})",
-    id,
-    title,
-    content,
-    url,
-    include,
-    code,
-    solution_id
-  );
+}})";
+
+static json build_graphql_payload(std::string const& titleSlug) {
+  json payload = {
+    {"query",         GRAPHQL_QUERY             },
+    {"variables",     {{"titleSlug", titleSlug}}},
+    {"operationName", "questionData"            }
+  };
+  return payload;
 }
 
 // assume input is well-formed html
@@ -94,7 +77,7 @@ static std::string parse_content(std::string content) {
   }
 
   // unescape characters
-  auto entityMap = std::map<std::string, std::string>{
+  static auto map = std::map<std::string, std::string>{
     {"&nbsp;",  ""  },
     {"&lt;",    "<" },
     {"&gt;",    ">" },
@@ -104,7 +87,7 @@ static std::string parse_content(std::string content) {
     {"&minus;", "-" },
     {"\n\n",    "\n"},
   };
-  for (auto const& [entity, replacement] : entityMap) {
+  for (auto const& [entity, replacement] : map) {
     size_t start_pos = 0;
     while ((start_pos = content.find(entity, start_pos)) != std::string::npos) {
       content.replace(start_pos, entity.length(), replacement);
@@ -114,10 +97,9 @@ static std::string parse_content(std::string content) {
   return content;
 }
 
-static std::string add_return(std::string type, std::string code) {
-  auto re = std::regex("\\{\n\\s*\\}");
-
-  auto map = std::map<std::string, std::string>{
+static std::string add_return(std::string const& type, std::string const& code) {
+  static auto re = std::regex("\\{\n\\s*\\}");
+  static auto map = std::map<std::string, std::string>{
     {"ListNode",            "{\n        return nullptr;\n    }"},
     {"ListNode[]",          "{\n        return {};\n    }"     },
     {"TreeNode",            "{\n        return nullptr;\n    }"},
@@ -152,12 +134,12 @@ static std::string add_return(std::string type, std::string code) {
   return code;
 }
 
-static std::string get_includes(std::vector<std::string> params) {
+static std::string get_includes(std::vector<std::string> const& params) {
   auto result = std::string{};
   auto vector = false;
   auto list = false;
 
-  for (const auto& param : params) {
+  for (auto const& param : params) {
     if (param.contains("ListNode")) {
       list = true;
     }
@@ -178,8 +160,7 @@ static std::string get_includes(std::vector<std::string> params) {
   return result;
 }
 
-int main(int argc, char* argv[]) {
-  // parse args
+static int64_t parse_args(int argc, char* argv[]) {
   const auto args =
     std::span{argv, argv + argc} | std::views::transform([](const char* str) { return std::string_view(str); });
   if (args.size() <= 1) {
@@ -187,19 +168,24 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
-  uint64_t question_id = 0;
-  std::from_chars(args[1].begin(), args[1].end(), question_id);
-
-  // check cache
-  auto cache_path = fs::current_path().append(".cache");
-  if (!fs::exists(cache_path)) {
-    fs::create_directory(cache_path);
+  int64_t result = 0;
+  auto [ptr, _] = std::from_chars(args[1].begin(), args[1].end(), result);
+  if (ptr != args[1].end()) {
+    std::println("Failed to parse Question ID: {}", args[1]);
+    exit(1);
   }
-  cache_path.append("problems.json");
+  return result;
+}
 
+static json get_problems() {
+  auto const cache_path = fs::current_path().append(".cache").append("problems.json");
+
+  if (!fs::exists(cache_path.parent_path())) {
+    fs::create_directory(cache_path.parent_path());
+  }
   if (!fs::exists(cache_path)) {
     auto cache = std::ofstream(cache_path);
-    auto r = cpr::Get(cpr::Url{"https://leetcode.com/api/problems/algorithms/"});
+    auto r = cpr::Get(cpr::Url{LEETCODE_API});
     std::print(cache, "{}", r.text);
     std::println(stderr, "Downloaded {} bytes in {} with status code {}", r.downloaded_bytes, r.elapsed, r.status_code);
     cache.close();
@@ -210,13 +196,21 @@ int main(int argc, char* argv[]) {
   json problems = json::parse(cache)["stat_status_pairs"];
   cache.close();
 
-  auto question = std::find_if(problems.begin(), problems.end(), [question_id](const auto& p) {
+  return problems;
+}
+
+int main(int argc, char* argv[]) {
+  auto question_id = parse_args(argc, argv);
+  auto problems = get_problems();
+
+  auto question = std::find_if(problems.begin(), problems.end(), [question_id](auto const& p) {
     return p["stat"]["question_id"] == question_id;
   });
   if (question == problems.end()) {
     std::println(stderr, "Question {} not found.", question_id);
     return 1;
   }
+
   auto stat = question.operator*()["stat"];
   auto title_slug = stat["question__title_slug"].get<std::string>();
   auto title_slug_snake = title_slug;
@@ -236,7 +230,7 @@ int main(int argc, char* argv[]) {
   // get question data
   // clang-format off
   cpr::Response r = cpr::Post(
-    cpr::Url{"https://leetcode.com/graphql"},
+    cpr::Url{LEETCODE_GRAPHQL},
     cpr::Body{build_graphql_payload(title_slug).dump()},
     cpr::Header{{"Content-Type", "application/json"}}
   );
@@ -252,26 +246,30 @@ int main(int argc, char* argv[]) {
   }
 
   // get code snippets
-  std::string code;
-  for (const auto& snippet : question_data["codeSnippets"]) {
+  auto code = std::string{};
+  for (auto const& snippet : question_data["codeSnippets"]) {
     if (snippet["lang"] == "C++") {
       code = snippet["code"];
       break;
+      // assume must exist
     }
   }
   auto metaData = json::parse(question_data["metaData"].get<std::string>());
-  auto params = std::vector<std::string>{};
-  for (auto param : metaData["params"]) {
-    params.emplace_back(param["type"]);
-  }
+  // clang-format off
+  auto params = metaData["params"]
+    | std::views::transform([](auto const& p) { return p["type"]; })
+    | std::ranges::to<std::vector<std::string>>();
+  // clang-format on
   auto return_type = metaData["return"]["type"].get<std::string>();
   params.push_back(return_type);
+
   code = add_return(return_type, code);
   auto include = get_includes(params);
   auto content = parse_content(std::move(question_data["content"]));
-  auto url = std::format("https://leetcode.com/problems/{}", title_slug);
+  auto url = std::format("{}/{}", LEETCODE_PROBLEMS, title_slug);
+  auto question_title = stat["question__title"].get<std::string>();
   auto code_template_filled =
-    code_template(question_id, stat["question__title"], content, url, include, code, solution_id);
+    std::format(CODE_TEMPLATE, question_id, question_title, content, url, include, code, solution_id);
 #ifdef TEST
   std::println("{}", code_template_filled);
   return 0;
