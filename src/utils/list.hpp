@@ -1,5 +1,7 @@
+#pragma once
 #include <format>
 #include <vector>
+
 #define SafeList ListNode __attribute__((__cleanup__(clean_up)))
 
 struct ListNode {
@@ -48,7 +50,7 @@ static inline void clean_up(ListNode **node) { delete_nodes(*node); }
 
 template <> class std::formatter<ListNode> {
 public:
-  constexpr auto parse(format_parse_context &ctx) { return ctx.begin(); }
+  constexpr auto parse(std::format_parse_context &ctx) { return ctx.begin(); }
   template <typename Context>
   constexpr auto format(const ListNode &node, Context &ctx) const {
     std::vector<int> vec{node.val};
