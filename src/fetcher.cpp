@@ -240,12 +240,13 @@ int main(int argc, char* argv[]) {
     exit(0);
   }
 
+  // clang-format off
   cpr::Response r = cpr::Post(
-    // clang-format off
     cpr::Url{LEETCODE_GRAPHQL_URL},
     cpr::Body{build_graphql_payload(title_slug).dump()},
-    cpr::Header{{"Content-Type", "application/json"}} // clang-format on
+    cpr::Header{{"Content-Type", "application/json"}}
   );
+  // clang-format on
 
   auto const question_data = json::parse(r.text)["data"]["question"];
   if (question_data.value("isPaidOnly", false)) {
