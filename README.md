@@ -1,5 +1,7 @@
 # LeetCode
 
+[![Tests](https://github.com/HE7086/LeetCode/actions/workflows/test.yml/badge.svg)](https://github.com/HE7086/LeetCode/actions/workflows/test.yml)
+
 My solution to LeetCode algorithm problems in C++. Together with a question fetcher(template generator).
 
 ## Usage
