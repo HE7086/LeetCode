@@ -41,7 +41,7 @@ if(NOT cpr_FOUND)
   FetchContent_MakeAvailable(cpr)
 endif()
 
-add_executable(fetcher main.cpp)
+add_executable(fetcher fetcher.cpp)
 target_link_libraries(fetcher PRIVATE
   nlohmann_json::nlohmann_json
   cpr::cpr
