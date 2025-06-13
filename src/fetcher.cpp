@@ -9,9 +9,9 @@
 #include <print>
 #include <regex>
 #include <span>
+#include <string_view>
 
 #include <nlohmann/json.hpp>
-#include <utility>
 #include <cpr/cpr.h>
 #include <cpr/response.h>
 
@@ -56,7 +56,7 @@ TEST(Test, {}) {{
   EXPECT_EQ(0, 1);
 }})";
 
-static json build_graphql_payload(std::string const& titleSlug) {
+static json build_graphql_payload(std::string_view titleSlug) {
   return {
     {"query",         GRAPHQL_QUERY             },
     {"variables",     {{"titleSlug", titleSlug}}},
@@ -64,9 +64,9 @@ static json build_graphql_payload(std::string const& titleSlug) {
   };
 }
 
-static std::string add_return(std::string const& type, std::string const& code_snippet) {
+static std::string add_return(std::string_view type, std::string code_snippet) {
   static auto const re = std::regex("\\{\n\\s*\\}");
-  static auto const map = std::map<std::string, std::string>{
+  static auto const map = std::map<std::string_view, std::string_view>{
     {"ListNode",            "{\n        return nullptr;\n    }"},
     {"ListNode[]",          "{\n        return {};\n    }"     },
     {"TreeNode",            "{\n        return nullptr;\n    }"},
@@ -92,8 +92,8 @@ static std::string add_return(std::string const& type, std::string const& code_s
     {"list<list<string>>",  "{\n        return {};\n    }"     },
   };
 
-  if (map.contains(type)) {
-    return std::regex_replace(code_snippet, re, map.at(type));
+  if (auto const it = map.find(type); it != map.end()) {
+    return std::regex_replace(code_snippet, re, it->second.data());
   }
 
   std::println(stderr, "Unknown return type: {}", type);
@@ -113,13 +113,13 @@ static std::string get_code_snippet(json const& question_data) {
 }
 
 // assume input is well-formed html
-static std::string parse_question_desc(std::string&& desc) {
+static std::string parse_question_desc(std::string desc) {
   // remove html tags
   static auto const re = std::regex{"<[^>]*>"};
   desc = std::regex_replace(desc, re, "");
 
   // unescape characters
-  static auto const map = std::map<std::string, std::string>{
+  static auto const map = std::map<std::string_view, std::string_view>{
     {"&nbsp;",  ""  },
     {"&lt;",    "<" },
     {"&gt;",    ">" },
@@ -140,33 +140,33 @@ static std::string parse_question_desc(std::string&& desc) {
 }
 
 static std::string generate_includes(json const& question_data) {
-  auto const meta_data = json::parse(question_data["metaData"].get<std::string>());
-  // clang-format off
-  auto types = meta_data["params"]
-    | std::views::transform([](auto const& p) { return p["type"]; })
-    | std::ranges::to<std::vector<std::string>>();
-  // clang-format on
-  types.emplace_back(meta_data["return"]["type"]);
+  auto const meta_data = json::parse(question_data["metaData"].get<std::string_view>());
+
+  auto has_vector = false;
+  auto has_list = false;
+
+  auto process_type = [&](std::string_view type) {
+    if (type.find("ListNode") != std::string_view::npos) {
+      has_list = true;
+    }
+    if (type.find("[]") != std::string_view::npos) {
+      has_vector = true;
+    }
+    if (type.find("list<") != std::string_view::npos) {
+      has_vector = true;
+    }
+  };
+
+  for (auto const& param : meta_data["params"]) {
+    process_type(param["type"].get<std::string_view>());
+  }
+  process_type(meta_data["return"]["type"].get<std::string_view>());
 
   auto result = std::string{};
-  auto vector = false;
-  auto list = false;
-
-  for (auto const& type : types) {
-    if (type.contains("ListNode")) {
-      list = true;
-    }
-    if (type.contains("[]")) {
-      vector = true;
-    }
-    if (type.contains("list<")) {
-      vector = true;
-    }
-  }
-  if (vector) {
+  if (has_vector) {
     result += "#include <vector>\n";
   }
-  if (list) {
+  if (has_list) {
     result += "#include <utils/list.hpp>\n";
   }
 
@@ -203,7 +203,7 @@ static json get_problems() {
   return json::parse(cache)["stat_status_pairs"];
 }
 
-static int64_t parse_question_id(int argc, char* argv[]) {
+static int64_t get_question_id(int argc, char* argv[]) {
   auto const args =
     std::span{argv, argv + argc} | std::views::transform([](const char* str) { return std::string_view(str); });
   if (args.size() <= 1) {
@@ -221,7 +221,7 @@ static int64_t parse_question_id(int argc, char* argv[]) {
 }
 
 int main(int argc, char* argv[]) {
-  auto const question_id = parse_question_id(argc, argv);
+  auto const question_id = get_question_id(argc, argv);
   auto const question_stat = get_question_stat(get_problems(), question_id);
 
   auto const title_slug = question_stat["question__title_slug"].get<std::string>();
@@ -240,8 +240,7 @@ int main(int argc, char* argv[]) {
     // clang-format off
     cpr::Url{LEETCODE_GRAPHQL_URL},
     cpr::Body{build_graphql_payload(title_slug).dump()},
-    cpr::Header{{"Content-Type", "application/json"}}
-    // clang-format on
+    cpr::Header{{"Content-Type", "application/json"}} // clang-format on
   );
 
   auto const question_data = json::parse(r.text)["data"]["question"];
@@ -250,7 +249,7 @@ int main(int argc, char* argv[]) {
   }
 
   auto const question_title = question_stat["question__title"].get<std::string>();
-  auto const question_desc = parse_question_desc(std::move(question_data["content"]));
+  auto const question_desc = parse_question_desc(question_data["content"]);
   auto const problem_url = std::format("{}/{}", LEETCODE_PROBLEMS_URL, title_slug);
   auto const includes = generate_includes(question_data);
   auto const code_snippet = get_code_snippet(question_data);
