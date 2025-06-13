@@ -26,11 +26,12 @@ My solution to LeetCode algorithm problems in C++. Together with a question fetc
   - `just test` would run tests for all initialized questions.
   - `just check` would run tests for the last modified solution(likely what you are working on).
   - `just check <id>` would run tests of the corresponding question. E.g. `just c 1` runs tests from `src/solution/s0001_two_sum.cpp`.
+  - All solutions are also tested in GitHub actions.
 
 * debugging
   - `just debug` would launch `gdb` with the last modified solution and set a breakpoint at the function.
-  - `just debug <id>` same with `check`
-  - This script is not very robust. It relies on the structure of the code template.
+  - `just debug <id>` same with `check`.
+  - This script is not very robust. It relies on the structure of the code template. Writing code only between two comment sections (`//======`) and keeping all the helper functions above solution should allow the script to work.
 
 ## Note
 * Only tested on Linux.
