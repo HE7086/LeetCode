@@ -6,7 +6,7 @@ find_package(GTest)
 if(NOT GTest_FOUND)
   FetchContent_Declare(googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG 1.17.0
+    GIT_TAG v1.17.0
   )
   FetchContent_MakeAvailable(googletest)
 endif()
@@ -22,6 +22,9 @@ foreach(source_file ${SOURCE_FILES})
 endforeach()
 
 #==================== fetcher ====================
+
+if(NOT DEFINED ENV{GITHUB_ACTIONS})
+# do not build fetcher in ci
 
 find_package(nlohmann_json)
 if(NOT nlohmann_json_FOUND)
@@ -50,3 +53,5 @@ target_compile_options(fetcher PRIVATE -Wall -Wextra -Wpedantic -Werror)
 set_property(TARGET fetcher PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
 set_property(TARGET fetcher PROPERTY POSITION_INDEPENDENT_CODE TRUE)
 set_property(TARGET fetcher PROPERTY EXCLUDE_FROM_ALL TRUE)
+
+endif()
