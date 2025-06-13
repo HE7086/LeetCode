@@ -131,6 +131,7 @@ static std::string parse_question_desc(std::string desc) {
     {"&apos;",  "'" },
     {"&minus;", "-" },
     {"\n\n",    "\n"},
+    {"&#39;",   "'" },
   };
   for (auto const& [entity, replacement] : map) {
     size_t start_pos = 0;
