@@ -115,6 +115,9 @@ static std::string get_code_snippet(json const& question_data) {
 // assume input is well-formed html
 static std::string parse_question_desc(std::string desc) {
   // remove html tags
+  static auto const re1 = std::regex{"<sup>"};
+  desc = std::regex_replace(desc, re1, "^");
+
   static auto const re = std::regex{"<[^>]*>"};
   desc = std::regex_replace(desc, re, "");
 

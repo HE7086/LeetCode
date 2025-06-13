@@ -24,7 +24,7 @@ Constraints:
 	0 <= m <= 1000
 	0 <= n <= 1000
 	1 <= m + n <= 2000
-	-106 <= nums1[i], nums2[i] <= 106
+	-10^6 <= nums1[i], nums2[i] <= 10^6
 
 URL: https://leetcode.com/problems/median-of-two-sorted-arrays
 ******************************/
