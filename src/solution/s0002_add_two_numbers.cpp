@@ -23,15 +23,15 @@ Output: [8,9,9,9,0,0,0,1]
 
 Constraints:
 
-	The number of nodes in each linked list is in the range [1, 100].
-	0 <= Node.val <= 9
-	It is guaranteed that the list represents a number that does not have leading zeros.
+    The number of nodes in each linked list is in the range [1, 100].
+    0 <= Node.val <= 9
+    It is guaranteed that the list represents a number that does not have leading zeros.
 
 URL: https://leetcode.com/problems/add-two-numbers
 ******************************/
 
-#include <utils/list.hpp>
 #include <gtest/gtest.h>
+#include <utils/list.hpp>
 
 using namespace std;
 
@@ -40,9 +40,9 @@ using namespace std;
 class Solution {
 public:
   ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-    int carry = 0;
-    ListNode* l3 = new ListNode();
-    ListNode* ptr = l3;
+    int       carry = 0;
+    ListNode* l3    = new ListNode();
+    ListNode* ptr   = l3;
 
     while (l1 != nullptr || l2 != nullptr) {
       int sum = carry;
@@ -55,12 +55,12 @@ public:
         l2 = l2->next;
       }
 
-      carry = sum / 10;
+      carry    = sum / 10;
       ptr->val = sum % 10;
 
       if (l1 || l2) {
         ptr->next = new ListNode();
-        ptr = ptr->next;
+        ptr       = ptr->next;
       }
     }
 

@@ -19,12 +19,12 @@ Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.
 
 Constraints:
 
-	nums1.length == m
-	nums2.length == n
-	0 <= m <= 1000
-	0 <= n <= 1000
-	1 <= m + n <= 2000
-	-10^6 <= nums1[i], nums2[i] <= 10^6
+    nums1.length == m
+    nums2.length == n
+    0 <= m <= 1000
+    0 <= n <= 1000
+    1 <= m + n <= 2000
+    -10^6 <= nums1[i], nums2[i] <= 10^6
 
 URL: https://leetcode.com/problems/median-of-two-sorted-arrays
 ******************************/
@@ -50,9 +50,9 @@ public:
       int partA = (left + right) / 2;
       int partB = (m + n + 1) / 2 - partA;
 
-      int maxLeftA = (partA == 0) ? INT_MIN : nums1[partA - 1];
+      int maxLeftA  = (partA == 0) ? INT_MIN : nums1[partA - 1];
       int minRightA = (partA == m) ? INT_MAX : nums1[partA];
-      int maxLeftB = (partB == 0) ? INT_MIN : nums2[partB - 1];
+      int maxLeftB  = (partB == 0) ? INT_MIN : nums2[partB - 1];
       int minRightB = (partB == n) ? INT_MAX : nums2[partB];
 
       if (maxLeftA <= minRightB && maxLeftB <= minRightA) {

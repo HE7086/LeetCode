@@ -25,8 +25,8 @@ Notice that the answer must be a substring, "pwke" is a subsequence and not a su
 
 Constraints:
 
-	0 <= s.length <= 5 * 10^4
-	s consists of English letters, digits, symbols and spaces.
+    0 <= s.length <= 5 * 10^4
+    s consists of English letters, digits, symbols and spaces.
 
 URL: https://leetcode.com/problems/longest-substring-without-repeating-characters
 ******************************/
@@ -43,6 +43,7 @@ class Solution {
 public:
   int lengthOfLongestSubstring(string s) {
     unordered_set<char> set{};
+
     int value = 0;
     for (int i = 0, j = 0; j < s.size();) {
       if (set.contains(s[j])) {

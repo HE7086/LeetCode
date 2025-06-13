@@ -11,17 +11,17 @@
 #include <span>
 #include <string_view>
 
-#include <nlohmann/json.hpp>
 #include <cpr/cpr.h>
 #include <cpr/response.h>
+#include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
+using json   = nlohmann::json;
 namespace fs = std::filesystem;
 
-static constexpr auto const LEETCODE_API_URL = "https://leetcode.com/api/problems/algorithms";
-static constexpr auto const LEETCODE_GRAPHQL_URL = "https://leetcode.com/graphql";
+static constexpr auto const LEETCODE_API_URL      = "https://leetcode.com/api/problems/algorithms";
+static constexpr auto const LEETCODE_GRAPHQL_URL  = "https://leetcode.com/graphql";
 static constexpr auto const LEETCODE_PROBLEMS_URL = "https://leetcode.com/problems";
-static constexpr auto const GRAPHQL_QUERY = R"(
+static constexpr auto const GRAPHQL_QUERY         = R"(
 query questionData($titleSlug: String!) {
   question(titleSlug: $titleSlug) {
     content
@@ -34,7 +34,7 @@ query questionData($titleSlug: String!) {
     }
   }
 })";
-static constexpr auto const CODE_TEMPLATE = R"(/******************************
+static constexpr auto const CODE_TEMPLATE         = R"(/******************************
 Question {}: {}
 
 {}
@@ -58,38 +58,38 @@ TEST(Test, {}) {{
 
 static json build_graphql_payload(std::string_view titleSlug) {
   return {
-    {"query",         GRAPHQL_QUERY             },
-    {"variables",     {{"titleSlug", titleSlug}}},
-    {"operationName", "questionData"            }
+      {"query",         GRAPHQL_QUERY             },
+      {"variables",     {{"titleSlug", titleSlug}}},
+      {"operationName", "questionData"            }
   };
 }
 
 static std::string add_return(std::string_view type, std::string code_snippet) {
-  static auto const re = std::regex("\\{\n\\s*\\}");
+  static auto const re  = std::regex("\\{\n\\s*\\}");
   static auto const map = std::map<std::string_view, std::string_view>{
-    {"ListNode",            "{\n        return nullptr;\n    }"},
-    {"ListNode[]",          "{\n        return {};\n    }"     },
-    {"TreeNode",            "{\n        return nullptr;\n    }"},
-    {"boolean",             "{\n        return false;\n    }"  },
-    {"character",           "{\n        return '0';\n    }"    },
-    {"character[][]",       "{\n        return {};\n    }"     },
-    {"double",              "{\n        return 0;\n    }"      },
-    {"double[]",            "{\n        return {};\n    }"     },
-    {"int[]",               "{\n        return nullptr;\n    }"},
-    {"integer",             "{\n        return 0;\n    }"      },
-    {"integer[]",           "{\n        return {};\n    }"     },
-    {"integer[][]",         "{\n        return {};\n    }"     },
-    {"integer[][]",         "{\n        return {};\n    }"     },
-    {"string",              "{\n        return \"\";\n    }"   },
-    {"string[]",            "{\n        return {};\n    }"     },
-    {"list<String>",        "{\n        return {};\n    }"     },
-    {"list<string>",        "{\n        return {};\n    }"     },
-    {"list<TreeNode>",      "{\n        return {};\n    }"     },
-    {"list<boolean>",       "{\n        return {};\n    }"     },
-    {"list<double>",        "{\n        return {};\n    }"     },
-    {"list<integer>",       "{\n        return {};\n    }"     },
-    {"list<list<integer>>", "{\n        return {};\n    }"     },
-    {"list<list<string>>",  "{\n        return {};\n    }"     },
+      {"ListNode",            "{\n        return nullptr;\n    }"},
+      {"ListNode[]",          "{\n        return {};\n    }"     },
+      {"TreeNode",            "{\n        return nullptr;\n    }"},
+      {"boolean",             "{\n        return false;\n    }"  },
+      {"character",           "{\n        return '0';\n    }"    },
+      {"character[][]",       "{\n        return {};\n    }"     },
+      {"double",              "{\n        return 0;\n    }"      },
+      {"double[]",            "{\n        return {};\n    }"     },
+      {"int[]",               "{\n        return nullptr;\n    }"},
+      {"integer",             "{\n        return 0;\n    }"      },
+      {"integer[]",           "{\n        return {};\n    }"     },
+      {"integer[][]",         "{\n        return {};\n    }"     },
+      {"integer[][]",         "{\n        return {};\n    }"     },
+      {"string",              "{\n        return \"\";\n    }"   },
+      {"string[]",            "{\n        return {};\n    }"     },
+      {"list<String>",        "{\n        return {};\n    }"     },
+      {"list<string>",        "{\n        return {};\n    }"     },
+      {"list<TreeNode>",      "{\n        return {};\n    }"     },
+      {"list<boolean>",       "{\n        return {};\n    }"     },
+      {"list<double>",        "{\n        return {};\n    }"     },
+      {"list<integer>",       "{\n        return {};\n    }"     },
+      {"list<list<integer>>", "{\n        return {};\n    }"     },
+      {"list<list<string>>",  "{\n        return {};\n    }"     },
   };
 
   if (auto const it = map.find(type); it != map.end()) {
@@ -101,7 +101,7 @@ static std::string add_return(std::string_view type, std::string code_snippet) {
 }
 
 static std::string get_code_snippet(json const& question_data) {
-  auto const meta_data = json::parse(question_data["metaData"].get<std::string>());
+  auto const meta_data   = json::parse(question_data["metaData"].get<std::string>());
   auto const return_type = meta_data["return"]["type"].get<std::string>();
   for (auto const& snippet : question_data["codeSnippets"]) {
     if (snippet["lang"] == "C++") {
@@ -116,22 +116,22 @@ static std::string get_code_snippet(json const& question_data) {
 static std::string parse_question_desc(std::string desc) {
   // remove html tags
   static auto const re1 = std::regex{"<sup>"};
-  desc = std::regex_replace(desc, re1, "^");
+  static auto const re2 = std::regex{"<[^>]*>"};
 
-  static auto const re = std::regex{"<[^>]*>"};
-  desc = std::regex_replace(desc, re, "");
+  desc = std::regex_replace(desc, re1, "^");
+  desc = std::regex_replace(desc, re2, "");
 
   // unescape characters
   static auto const map = std::map<std::string_view, std::string_view>{
-    {"&nbsp;",  ""  },
-    {"&lt;",    "<" },
-    {"&gt;",    ">" },
-    {"&amp;",   "&" },
-    {"&quot;",  "\""},
-    {"&apos;",  "'" },
-    {"&minus;", "-" },
-    {"\n\n",    "\n"},
-    {"&#39;",   "'" },
+      {"&nbsp;",  ""  },
+      {"&lt;",    "<" },
+      {"&gt;",    ">" },
+      {"&amp;",   "&" },
+      {"&quot;",  "\""},
+      {"&apos;",  "'" },
+      {"&minus;", "-" },
+      {"\n\n",    "\n"},
+      {"&#39;",   "'" },
   };
   for (auto const& [entity, replacement] : map) {
     size_t start_pos = 0;
@@ -147,7 +147,7 @@ static std::string generate_includes(json const& question_data) {
   auto const meta_data = json::parse(question_data["metaData"].get<std::string_view>());
 
   auto has_vector = false;
-  auto has_list = false;
+  auto has_list   = false;
 
   auto process_type = [&](std::string_view type) {
     if (type.find("ListNode") != std::string_view::npos) {
@@ -209,14 +209,14 @@ static json get_problems() {
 
 static int64_t get_question_id(int argc, char* argv[]) {
   auto const args =
-    std::span{argv, argv + argc} | std::views::transform([](const char* str) { return std::string_view(str); });
+      std::span{argv, argv + argc} | std::views::transform([](char const* str) { return std::string_view(str); });
   if (args.size() <= 1) {
     std::println(stderr, "Usage: {} <id>", args[0]);
     return 0;
   }
 
   int64_t result = 0;
-  auto [ptr, _] = std::from_chars(args[1].begin(), args[1].end(), result);
+  auto [ptr, _]  = std::from_chars(args[1].begin(), args[1].end(), result);
   if (ptr != args[1].end()) {
     std::println("Failed to parse Question ID: {}", args[1]);
     exit(1);
@@ -225,15 +225,15 @@ static int64_t get_question_id(int argc, char* argv[]) {
 }
 
 int main(int argc, char* argv[]) {
-  auto const question_id = get_question_id(argc, argv);
+  auto const question_id   = get_question_id(argc, argv);
   auto const question_stat = get_question_stat(get_problems(), question_id);
 
-  auto const title_slug = question_stat["question__title_slug"].get<std::string>();
-  auto title_slug_snake = title_slug;
+  auto const title_slug       = question_stat["question__title_slug"].get<std::string>();
+  auto       title_slug_snake = title_slug;
   std::replace(title_slug_snake.begin(), title_slug_snake.end(), '-', '_');
 
   // check if already initialized
-  auto const solution_id = std::format("s{:04}_{}", question_id, title_slug_snake);
+  auto const solution_id   = std::format("s{:04}_{}", question_id, title_slug_snake);
   auto const solution_path = fs::current_path() / "src" / "solution" / (solution_id + ".cpp");
   if (fs::exists(solution_path)) {
     std::println(stderr, "{} already initialized! Skipping...", solution_path.filename().string());
@@ -254,23 +254,23 @@ int main(int argc, char* argv[]) {
   }
 
   auto const question_title = question_stat["question__title"].get<std::string>();
-  auto const question_desc = parse_question_desc(question_data["content"]);
-  auto const problem_url = std::format("{}/{}", LEETCODE_PROBLEMS_URL, title_slug);
-  auto const includes = generate_includes(question_data);
-  auto const code_snippet = get_code_snippet(question_data);
+  auto const question_desc  = parse_question_desc(question_data["content"]);
+  auto const problem_url    = std::format("{}/{}", LEETCODE_PROBLEMS_URL, title_slug);
+  auto const includes       = generate_includes(question_data);
+  auto const code_snippet   = get_code_snippet(question_data);
 
   // write to solution folder
   auto solution = std::ofstream(solution_path);
   std::print(
-    solution,
-    CODE_TEMPLATE,
-    question_id,
-    question_title,
-    question_desc,
-    problem_url,
-    includes,
-    code_snippet,
-    solution_id
+      solution,
+      CODE_TEMPLATE,
+      question_id,
+      question_title,
+      question_desc,
+      problem_url,
+      includes,
+      code_snippet,
+      solution_id
   );
 
   std::println(stderr, "Successfully initialized {} at {}", question_id, solution_path.filename().string());
