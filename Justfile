@@ -36,7 +36,7 @@ debug ARG="": build
   fi
   ID=$(printf "s%04d" "$TARGET")
   FUNC=$(find src/solution -name "$ID*" -exec cat {} \; \
-    | sed -n '/\/\/=/,/\/\/=/p' \
+    | sed -n '/\/\/=====/,/\/\/=====/p' \
     | grep -Po '(?<=\S\s)(\w+)(?=\(.*\) {)' \
     | tail -n 1)
   find build/src/Debug -name "$ID*" -exec gdb {} -ex "b $FUNC" \;
