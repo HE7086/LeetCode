@@ -18,7 +18,12 @@ foreach(source_file ${SOURCE_FILES})
   add_executable(${exe} ${source_file})
   target_link_libraries(${exe} PRIVATE GTest::GTest GTest::Main)
   target_include_directories(${exe} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
+  target_compile_options(${exe} PRIVATE -Wall -Wextra -Wpedantic)
   gtest_discover_tests(${exe})
+
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(${exe} PRIVATE -Wnrvo)
+  endif()
 endforeach()
 
 #==================== fetcher ====================
