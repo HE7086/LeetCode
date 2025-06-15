@@ -72,7 +72,7 @@ public:
     int left  = i;
     int right = j;
 
-    while (left >= 0 && right < s.size() && s[left] == s[right]) {
+    while (left >= 0 && right < static_cast<int>(s.size()) && s[left] == s[right]) {
       left--;
       right++;
     }
@@ -83,7 +83,7 @@ public:
   string longestPalindrome(string const& s) {
     auto ans = string_view{};
 
-    for (int i = 0; i < s.size(); i++) {
+    for (int i = 0; i < static_cast<int>(s.size()); i++) {
       auto odd = expand(i, i, s);
       if (odd.size() > ans.size()) {
         ans = odd;
