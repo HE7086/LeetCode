@@ -44,8 +44,8 @@ public:
   int lengthOfLongestSubstring(string s) {
     unordered_set<char> set{};
 
-    int value = 0;
-    for (int i = 0, j = 0; j < s.size();) {
+    size_t value = 0;
+    for (size_t i = 0, j = 0; j < s.size();) {
       if (set.contains(s[j])) {
         set.erase(s[i++]);
       } else {

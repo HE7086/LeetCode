@@ -46,10 +46,10 @@ class Solution {
 public:
   vector<int> twoSum(vector<int> const& nums, int target) {
     auto map = unordered_map<int, int>{};
-    for (int i = 0; i < nums.size(); ++i) {
+    for (size_t i = 0; i < nums.size(); ++i) {
       int n = target - nums[i];
       if (auto it = map.find(n); it != map.end()) {
-        return {it->second, i};
+        return {it->second, static_cast<int>(i)};
       } else {
         map.insert({nums[i], i});
       }
