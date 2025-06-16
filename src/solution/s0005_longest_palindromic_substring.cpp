@@ -23,6 +23,8 @@ Constraints:
 URL: https://leetcode.com/problems/longest-palindromic-substring
 ******************************/
 
+#include <string>
+#include <string_view>
 #include <gtest/gtest.h>
 
 using namespace std;

@@ -43,6 +43,7 @@ Constraints:
 URL: https://leetcode.com/problems/zigzag-conversion
 ******************************/
 
+#include <string>
 #include <gtest/gtest.h>
 
 using namespace std;
