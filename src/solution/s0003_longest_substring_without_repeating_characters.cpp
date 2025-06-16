@@ -39,6 +39,13 @@ using namespace std;
 
 //==============================================================================
 
+/* O(n) time; O(n) space
+ * We are looking for substring *without* duplicates, so naturally we just store every characters in a set.
+ * Use 2 pointers here for the beginning and end of the substring.
+ * Each time we move the end pointer forward, the char is stored into the set.
+ * And if it is already in, i.e. we find a duplicate, the start pointer is moved forward.
+ * The maximum value of the difference between the 2 pointers is then the result.
+ */
 class Solution {
 public:
   int lengthOfLongestSubstring(string s) {
@@ -47,6 +54,9 @@ public:
     size_t value = 0;
     for (size_t i = 0, j = 0; j < s.size();) {
       if (set.contains(s[j])) {
+        // duplicate found
+        // the erased char might not be the duplicate
+        // so check it in the next loop again
         set.erase(s[i++]);
       } else {
         set.emplace(s[j++]);

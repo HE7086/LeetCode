@@ -42,6 +42,11 @@ using namespace std;
 
 //==============================================================================
 
+/* O(n) time; O(n) space
+ * For each number n, we are essentially just looking for (target - n) in nums.
+ * So we simply store all numbers in a map and lookup (target - n) while inserting.
+ */
+
 class Solution {
 public:
   vector<int> twoSum(vector<int> const& nums, int target) {

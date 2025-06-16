@@ -37,6 +37,11 @@ using namespace std;
 
 //==============================================================================
 
+/* O(n) time; O(n) space
+ * Basically just a full adder for a list, nothing fancy.
+ * The most difficult part is actually writing a memory safe and easy to use version of the ListNode(SafeList here).
+ */
+
 class Solution {
 public:
   ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
