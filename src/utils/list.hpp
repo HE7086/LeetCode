@@ -14,7 +14,7 @@ struct ListNode {
   ListNode(int x, ListNode* next)
       : val(x), next(next) {}
 
-  bool operator==(ListNode const other) const {
+  bool operator==(ListNode const& other) const {
     if (val != other.val || (next != nullptr && other.next == nullptr) || (next == nullptr && other.next != nullptr)) {
       return false;
     }
@@ -29,9 +29,9 @@ static inline ListNode* make_nodes(std::initializer_list<int> list) {
   if (list.size() == 0) {
     return nullptr;
   }
-  auto      it   = list.begin();
-  ListNode* head = new ListNode(*it++);
-  ListNode* ptr  = head;
+  auto  it   = list.begin();
+  auto* head = new ListNode(*it++);
+  auto* ptr  = head;
   for (; it != list.end(); ++it) {
     ptr->next = new ListNode(*it);
     ptr       = ptr->next;
@@ -58,8 +58,8 @@ public:
   }
   template<typename Context>
   constexpr auto format(ListNode const& node, Context& ctx) const {
-    std::vector<int> vec{node.val};
-    ListNode*        p = node.next;
+    auto  vec = std::vector<int>{node.val};
+    auto* p   = node.next;
     while (p != nullptr) {
       vec.push_back(p->val);
       p = p->next;

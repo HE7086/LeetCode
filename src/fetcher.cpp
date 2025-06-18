@@ -148,10 +148,14 @@ static std::string generate_includes(json const& question_data) {
 
   auto has_vector = false;
   auto has_list   = false;
+  auto has_tree   = false;
 
   auto process_type = [&](std::string_view type) {
     if (type.find("ListNode") != std::string_view::npos) {
       has_list = true;
+    }
+    if (type.find("TreeNode") != std::string_view::npos) {
+      has_tree = true;
     }
     if (type.find("[]") != std::string_view::npos) {
       has_vector = true;
@@ -172,6 +176,9 @@ static std::string generate_includes(json const& question_data) {
   }
   if (has_list) {
     result += "#include <utils/list.hpp>\n";
+  }
+  if (has_tree) {
+    result += "#include <utils/tree.hpp>\n";
   }
 
   return result;
