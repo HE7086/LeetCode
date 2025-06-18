@@ -75,7 +75,7 @@ static std::string add_return(std::string_view type, std::string code_snippet) {
       {"character[][]",       "{\n        return {};\n    }"     },
       {"double",              "{\n        return 0;\n    }"      },
       {"double[]",            "{\n        return {};\n    }"     },
-      {"int[]",               "{\n        return nullptr;\n    }"},
+      {"int[]",               "{\n        return {};\n    }"},
       {"integer",             "{\n        return 0;\n    }"      },
       {"integer[]",           "{\n        return {};\n    }"     },
       {"integer[][]",         "{\n        return {};\n    }"     },
