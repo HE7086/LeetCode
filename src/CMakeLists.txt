@@ -23,6 +23,8 @@ foreach(source_file ${SOURCE_FILES})
   if(NOT DEFINED ENV{GITHUB_ACTIONS})
     # disable warnings on ci
     target_compile_options(${exe} PRIVATE -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-unused-parameter)
+    target_compile_options(${exe} PRIVATE -fsanitize=address -fsanitize=undefined)
+    target_link_options(${exe} PRIVATE -fsanitize=address -fsanitize=undefined)
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
       target_compile_options(${exe} PRIVATE -Wnrvo)
     endif()
