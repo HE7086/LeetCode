@@ -82,6 +82,7 @@ URL: https://leetcode.com/problems/string-to-integer-atoi
 ******************************/
 
 #include <limits>
+#include <string>
 #include <gtest/gtest.h>
 
 using namespace std;

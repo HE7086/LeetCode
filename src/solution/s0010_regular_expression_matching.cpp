@@ -39,6 +39,7 @@ Constraints:
 URL: https://leetcode.com/problems/regular-expression-matching
 ******************************/
 
+#include <string>
 #include <gtest/gtest.h>
 
 using namespace std;

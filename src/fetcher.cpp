@@ -155,6 +155,7 @@ static std::string generate_includes(json const& question_data) {
   auto const meta_data = json::parse(question_data["metaData"].get<std::string_view>());
 
   auto has_vector = false;
+  auto has_string = false;
   auto has_list   = false;
   auto has_tree   = false;
 
@@ -171,6 +172,12 @@ static std::string generate_includes(json const& question_data) {
     if (type.find("list<") != std::string_view::npos) {
       has_vector = true;
     }
+    if (type.find("String") != std::string_view::npos) {
+      has_string = true;
+    }
+    if (type.find("string") != std::string_view::npos) {
+      has_string = true;
+    }
   };
 
   for (auto const& param : meta_data["params"]) {
@@ -179,6 +186,9 @@ static std::string generate_includes(json const& question_data) {
   process_type(meta_data["return"]["type"].get<std::string_view>());
 
   auto result = std::string{};
+  if (has_string) {
+    result += "#include <string>\n";
+  }
   if (has_vector) {
     result += "#include <vector>\n";
   }
