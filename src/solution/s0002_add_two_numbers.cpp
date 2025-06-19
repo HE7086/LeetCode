@@ -85,18 +85,21 @@ TEST(Test, s0002_add_two_numbers) {
     SafeList* a = make_nodes({2, 4, 3});
     SafeList* b = make_nodes({5, 6, 4});
     SafeList* c = make_nodes({7, 0, 8});
-    EXPECT_EQ(*c, *s.addTwoNumbers(a, b));
+    SafeList* d = s.addTwoNumbers(a, b);
+    EXPECT_EQ(*c, *d);
   }
   {
     SafeList* a = make_nodes({0});
     SafeList* b = make_nodes({0});
     SafeList* c = make_nodes({0});
-    EXPECT_EQ(*c, *s.addTwoNumbers(a, b));
+    SafeList* d = s.addTwoNumbers(a, b);
+    EXPECT_EQ(*c, *d);
   }
   {
     SafeList* a = make_nodes({9, 9, 9, 9, 9, 9, 9});
     SafeList* b = make_nodes({9, 9, 9, 9});
     SafeList* c = make_nodes({8, 9, 9, 9, 0, 0, 0, 1});
-    EXPECT_EQ(*c, *s.addTwoNumbers(a, b));
+    SafeList* d = s.addTwoNumbers(a, b);
+    EXPECT_EQ(*c, *d);
   }
 }
