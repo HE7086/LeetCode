@@ -130,6 +130,7 @@ static std::string parse_question_desc(std::string desc) {
   // unescape characters
   static auto const map = std::map<std::string_view, std::string_view>{
       {"&nbsp;",  ""  },
+      {"\u200b",  ""  },
       {"&lt;",    "<" },
       {"&gt;",    ">" },
       {"&amp;",   "&" },
