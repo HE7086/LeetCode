@@ -46,7 +46,7 @@ class Solution {
   int reverse(int x) {
     static constexpr int const max10 = numeric_limits<int>::max() / 10;
 
-    [[assume(x > 0)]];
+    [[assume(x >= 0)]];
     int ans = 0;
     while (x != 0) {
       int y = x % 10;
