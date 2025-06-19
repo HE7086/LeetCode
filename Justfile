@@ -18,7 +18,7 @@ check ARG="": build
   else
     TARGET="{{ARG}}"
   fi
-  GTEST_COLOR=1 ctest --test-dir build --output-on-failure -R $(printf "Test.s%04d" "$TARGET")
+  GTEST_COLOR=1 ctest --test-dir build --output-on-failure -R $(printf "Test.s%04d" "$((10#$TARGET))")
 
 build-fetcher:
   cmake -B build -G "Ninja Multi-Config"
@@ -34,7 +34,7 @@ debug ARG="": build
   else
     TARGET="{{ARG}}"
   fi
-  ID=$(printf "s%04d" "$TARGET")
+  ID=$(printf "s%04d" "$((10#$TARGET))")
   FUNC=$(find src/solution -name "$ID*" -exec cat {} \; \
     | sed -n '/\/\/=====/,/\/\/=====/p' \
     | grep -Po '(?<=\S\s)(\w+)(?=\(.*\) {)' \
