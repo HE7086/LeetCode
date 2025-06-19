@@ -20,11 +20,12 @@ foreach(source_file ${SOURCE_FILES})
   target_include_directories(${exe} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
   gtest_discover_tests(${exe})
 
+  target_compile_options(${exe} PRIVATE -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-unused-parameter)
+  target_compile_options(${exe} PRIVATE -fsanitize=address -fsanitize=undefined)
+  target_link_options(${exe} PRIVATE -fsanitize=address -fsanitize=undefined)
+
   if(NOT DEFINED ENV{GITHUB_ACTIONS})
-    # disable warnings on ci
-    target_compile_options(${exe} PRIVATE -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-unused-parameter)
-    target_compile_options(${exe} PRIVATE -fsanitize=address -fsanitize=undefined)
-    target_link_options(${exe} PRIVATE -fsanitize=address -fsanitize=undefined)
+    # GitHub actions' g++ is too old for -Wnrvo as of now
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
       target_compile_options(${exe} PRIVATE -Wnrvo)
     endif()
@@ -33,8 +34,10 @@ endforeach()
 
 #==================== fetcher ====================
 
-if(NOT DEFINED ENV{GITHUB_ACTIONS})
+if(DEFINED ENV{GITHUB_ACTIONS})
 # do not build fetcher in ci
+return()
+endif()
 
 find_package(nlohmann_json)
 if(NOT nlohmann_json_FOUND)
@@ -63,5 +66,3 @@ target_compile_options(fetcher PRIVATE -Wall -Wextra -Wpedantic -Werror)
 set_property(TARGET fetcher PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
 set_property(TARGET fetcher PROPERTY POSITION_INDEPENDENT_CODE TRUE)
 set_property(TARGET fetcher PROPERTY EXCLUDE_FROM_ALL TRUE)
-
-endif()
