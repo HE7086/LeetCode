@@ -21,8 +21,8 @@ foreach(source_file ${SOURCE_FILES})
   gtest_discover_tests(${exe})
 
   target_compile_options(${exe} PRIVATE -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-unused-parameter)
-  target_compile_options(${exe} PRIVATE -fsanitize=address -fsanitize=undefined)
-  target_link_options(${exe} PRIVATE -fsanitize=address -fsanitize=undefined)
+  target_compile_options(${exe} PRIVATE $<$<CONFIG:Debug>:-fsanitize=address;-fsanitize=undefined>)
+  target_link_options(${exe} PRIVATE $<$<CONFIG:Debug>:-fsanitize=address;-fsanitize=undefined>)
 
   if(NOT DEFINED ENV{GITHUB_ACTIONS})
     # GitHub actions' g++ is too old for -Wnrvo as of now
