@@ -36,6 +36,7 @@ query questionData($titleSlug: String!) {
 })";
 static constexpr auto const CODE_TEMPLATE         = R"(/******************************
 Question {}: {}
+Difficulty: {}
 
 {}
 URL: {}
@@ -55,6 +56,11 @@ TEST(Test, {}) {{
   auto s = Solution{{}};
   EXPECT_EQ(0, 1);
 }})";
+static auto const           DIFFICULTY_MAP        = std::map<int, std::string>{
+    {1, "Easy"},
+    {2, "Med."},
+    {3, "Hard"},
+};
 
 static json build_graphql_payload(std::string_view titleSlug) {
   return {
@@ -185,7 +191,7 @@ static std::string generate_includes(json const& question_data) {
   return result;
 }
 
-static json get_question_stat(json const& problems, int64_t question_id) {
+static json get_question(json const& problems, int64_t question_id) {
   auto const question = std::find_if(problems.begin(), problems.end(), [question_id](auto const& p) {
     return p["stat"]["question_id"] == question_id;
   });
@@ -193,7 +199,7 @@ static json get_question_stat(json const& problems, int64_t question_id) {
     std::println(stderr, "Question {} not found.", question_id);
     exit(1);
   }
-  return question.operator*()["stat"];
+  return question.operator*();
 }
 
 static json get_problems() {
@@ -234,7 +240,8 @@ static int64_t get_question_id(int argc, char* argv[]) {
 
 int main(int argc, char* argv[]) {
   auto const question_id   = get_question_id(argc, argv);
-  auto const question_stat = get_question_stat(get_problems(), question_id);
+  auto const question      = get_question(get_problems(), question_id);
+  auto const question_stat = question["stat"];
 
   auto const title_slug       = question_stat["question__title_slug"].get<std::string>();
   auto       title_slug_snake = title_slug;
@@ -262,6 +269,7 @@ int main(int argc, char* argv[]) {
   }
 
   auto const question_title = question_stat["question__title"].get<std::string>();
+  auto const difficulty     = DIFFICULTY_MAP.at(question["difficulty"]["level"].get<int>());
   auto const question_desc  = parse_question_desc(question_data["content"]);
   auto const problem_url    = std::format("{}/{}", LEETCODE_PROBLEMS_URL, title_slug);
   auto const includes       = generate_includes(question_data);
@@ -274,6 +282,7 @@ int main(int argc, char* argv[]) {
       CODE_TEMPLATE,
       question_id,
       question_title,
+      difficulty,
       question_desc,
       problem_url,
       includes,

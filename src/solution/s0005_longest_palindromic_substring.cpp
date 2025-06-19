@@ -1,5 +1,6 @@
 /******************************
 Question 5: Longest Palindromic Substring
+Difficulty: Med.
 
 Given a string s, return the longest palindromic substring in s.
 
