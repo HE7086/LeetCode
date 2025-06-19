@@ -75,7 +75,7 @@ static std::string add_return(std::string_view type, std::string code_snippet) {
       {"character[][]",       "{\n        return {};\n    }"     },
       {"double",              "{\n        return 0;\n    }"      },
       {"double[]",            "{\n        return {};\n    }"     },
-      {"int[]",               "{\n        return {};\n    }"},
+      {"int[]",               "{\n        return {};\n    }"     },
       {"integer",             "{\n        return 0;\n    }"      },
       {"integer[]",           "{\n        return {};\n    }"     },
       {"integer[][]",         "{\n        return {};\n    }"     },
@@ -132,6 +132,7 @@ static std::string parse_question_desc(std::string desc) {
       {"&minus;", "-" },
       {"\n\n",    "\n"},
       {"&#39;",   "'" },
+      {"\t",      "  "},
   };
   for (auto const& [entity, replacement] : map) {
     size_t start_pos = 0;
