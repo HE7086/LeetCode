@@ -42,25 +42,26 @@ using namespace std;
  * Simply reuse the reverse function from s0007.
  * Nothing worth noting.
  */
-class Solution {
-  int reverse(int x) {
-    static constexpr int const max10 = numeric_limits<int>::max() / 10;
+static inline int reverse(int x) {
+  static constexpr int const max10 = numeric_limits<int>::max() / 10;
 
-    [[assume(x >= 0)]];
-    int ans = 0;
-    while (x != 0) {
-      int y = x % 10;
-      x /= 10;
+  [[assume(x >= 0)]];
+  int ans = 0;
+  while (x != 0) {
+    int y = x % 10;
+    x /= 10;
 
-      if (ans > max10 || (ans == max10 && y > 7)) {
-        // anything that could overflow is for sure not palindrome
-        // biggest palindrome: 2147447412
-        return 0;
-      }
-      ans = 10 * ans + y;
+    if (ans > max10 || (ans == max10 && y > 7)) {
+      // anything that could overflow is for sure not palindrome
+      // biggest palindrome: 2147447412
+      return 0;
     }
-    return ans;
+    ans = 10 * ans + y;
   }
+  return ans;
+}
+
+class Solution {
 public:
   bool isPalindrome(int x) {
     if (x < 0) {
@@ -81,4 +82,3 @@ TEST(Test, s0009_palindrome_number) {
   EXPECT_EQ(true, s.isPalindrome(2147447412));
   EXPECT_EQ(false, s.isPalindrome(2147483647));
 }
-

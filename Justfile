@@ -35,10 +35,8 @@ debug ARG="": build
     TARGET="{{ARG}}"
   fi
   ID=$(printf "s%04d" "$((10#$TARGET))")
-  FUNC=$(find src/solution -name "$ID*" -exec cat {} \; \
-    | sed -n '/\/\/=====/,/\/\/=====/p' \
-    | grep -Po '(?<=\S\s)(\w+)(?=\(.*\) {)' \
-    | tail -n 1)
+  FUNC=$(find build/src/Debug -name "$ID*" -type f -exec nm -C {} \; | grep -Po '(?<=W )Solution::[a-zA-Z_]+')
+  echo "Breakpoint: $FUNC"
   find build/src/Debug -name "$ID*" -exec gdb {} -ex "b $FUNC" \;
 
 clean:

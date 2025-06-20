@@ -49,8 +49,8 @@ Constraints:
 URL: https://leetcode.com/problems/roman-to-integer
 ******************************/
 
-#include <string>
 #include <iterator>
+#include <string>
 #include <gtest/gtest.h>
 
 using namespace std;
@@ -62,20 +62,20 @@ using namespace std;
  *
  * For inputs in [1, 3999] a lookup table is also feasible.
  */
-class Solution {
-  static constexpr int roman_char_to_int(char c) {
-    switch (c) {
-      case 'M': return 1000;
-      case 'D': return 500;
-      case 'C': return 100;
-      case 'L': return 50;
-      case 'X': return 10;
-      case 'V': return 5;
-      case 'I': return 1;
-      default: return 0;
-    }
+static constexpr inline int roman_char_to_int(char c) {
+  switch (c) {
+    case 'M': return 1000;
+    case 'D': return 500;
+    case 'C': return 100;
+    case 'L': return 50;
+    case 'X': return 10;
+    case 'V': return 5;
+    case 'I': return 1;
+    default: return 0;
   }
+}
 
+class Solution {
 public:
   int romanToInt(string const& s) {
     int result = 0;
@@ -99,4 +99,3 @@ TEST(Test, s0013_roman_to_integer) {
   EXPECT_EQ(58, s.romanToInt("LVIII"));
   EXPECT_EQ(1994, s.romanToInt("MCMXCIV"));
 }
-

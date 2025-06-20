@@ -69,20 +69,20 @@ using namespace std;
  *
  * Note: Manacher's algorithm can do O(n) time in O(n) space using a bogus character
  */
-class Solution {
-public:
-  string_view expand(int i, int j, string_view s) {
-    int left  = i;
-    int right = j;
+static inline string_view expand(int i, int j, string_view s) {
+  int left  = i;
+  int right = j;
 
-    while (left >= 0 && right < static_cast<int>(s.size()) && s[left] == s[right]) {
-      left--;
-      right++;
-    }
-
-    return s.substr(left + 1, right - left - 1);
+  while (left >= 0 && right < static_cast<int>(s.size()) && s[left] == s[right]) {
+    left--;
+    right++;
   }
 
+  return s.substr(left + 1, right - left - 1);
+}
+
+class Solution {
+public:
   string longestPalindrome(string const& s) {
     auto ans = string_view{};
 

@@ -110,23 +110,22 @@ using namespace std;
  *   (x, y) = (x, y) || (x - 1, y)
  *   # case one-or-more: take 1 input, pattern don't move
  */
+// no std::vector<bool> pls
+struct Bool {
+  bool val = false;
+  operator bool() const {
+    return val;
+  }
+  Bool& operator=(bool b) {
+    val = b;
+    return *this;
+  }
+  Bool& operator|=(bool b) {
+    val |= b;
+    return *this;
+  }
+};
 class Solution {
-  // no std::vector<bool> pls
-  struct Bool {
-    bool val = false;
-    operator bool() const {
-      return val;
-    }
-    Bool& operator=(bool b) {
-      val = b;
-      return *this;
-    }
-    Bool& operator|=(bool b) {
-      val |= b;
-      return *this;
-    }
-  };
-
 public:
   bool isMatch(string const& s, string const& p) {
     auto dp = vector<vector<Bool>>{s.size() + 1, vector<Bool>{p.size() + 1}};

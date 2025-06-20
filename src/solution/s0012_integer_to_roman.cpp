@@ -116,20 +116,20 @@ using namespace std;
  * Optimized lookup table for 0 < nums < 4000.
  * Use slightly more memory than the previous one.
  */
-class Solution {
-  static constexpr auto const one = array<char const*, 10>{
-      {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"}
-  };
-  static constexpr auto const ten = array<char const*, 10>{
-      {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"}
-  };
-  static constexpr auto const hunderd = array<char const*, 10>{
-      {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"}
-  };
-  static constexpr auto const thousand = array<char const*, 4>{
-      {"", "M", "MM", "MMM"}
-  };
+static constexpr auto const one = array<char const*, 10>{
+    {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"}
+};
+static constexpr auto const ten = array<char const*, 10>{
+    {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"}
+};
+static constexpr auto const hunderd = array<char const*, 10>{
+    {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"}
+};
+static constexpr auto const thousand = array<char const*, 4>{
+    {"", "M", "MM", "MMM"}
+};
 
+class Solution {
 public:
   string intToRoman(int num) {
     [[assume(0 < num && num < 4000)]];
