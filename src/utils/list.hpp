@@ -2,8 +2,29 @@
 #include <format>
 #include <vector>
 
-#define SafeList ListNode __attribute__((__cleanup__(clean_up)))
+#define SafeList ListNode __attribute__((__cleanup__(clean_up_list)))
 
+/**
+ * Helper struct for working with LeetCode's list questions.
+ * The struct definition is exactly the same as official one, with some helper function to make life easier.
+ *
+ * The "SafeList" macro will auto release memory. Make sure only the head of the list is declared using the macro.
+ * Other nodes should either be created using "make_list", or "operator new".
+ *
+ * We can't use smart pointer here because the solution then will not be able to be submitted (yikes).
+ *
+ * Usage:
+ * SafeList* list = make_list({1, 2, 3});
+ * EXPECT_EQ(*list, *list);
+ * EXPECT_EQ(list->val , list->val);
+ *
+ * SafeList* null_list = make_list({});
+ * Expect_EQ(null_list, nullptr);
+ *
+ * SafeList* list2 = make_list({1});
+ * list2->next = new ListNode(2);
+ * EXPECT_EQ("[1, 2]", std::format("{}", *list2));
+ */
 struct ListNode {
   int       val;
   ListNode* next;
@@ -25,7 +46,7 @@ struct ListNode {
   }
 };
 
-static inline ListNode* make_nodes(std::initializer_list<int> list) {
+static inline ListNode* make_list(std::initializer_list<int> list) {
   if (list.size() == 0) {
     return nullptr;
   }
@@ -39,30 +60,33 @@ static inline ListNode* make_nodes(std::initializer_list<int> list) {
   return head;
 }
 
-static inline void delete_nodes(ListNode* node) {
+static inline void delete_list_nodes(ListNode* node) {
+  if (node == nullptr) {
+    return;
+  }
   if (node->next != nullptr) {
-    delete_nodes(node->next);
+    delete_list_nodes(node->next);
   }
   delete node;
 }
 
-static inline void clean_up(ListNode** node) {
-  delete_nodes(*node);
+static inline void clean_up_list(ListNode** node) {
+  if (node == nullptr) {
+    return;
+  }
+  delete_list_nodes(*node);
 }
 
 template<>
-class std::formatter<ListNode> {
+struct std::formatter<ListNode> : std::formatter<std::vector<int>> {
 public:
-  constexpr auto parse(std::format_parse_context& ctx) {
-    return ctx.begin();
-  }
   template<typename Context>
   constexpr auto format(ListNode const& node, Context& ctx) const {
     auto  vec = std::vector<int>{node.val};
-    auto* p   = node.next;
-    while (p != nullptr) {
-      vec.push_back(p->val);
-      p = p->next;
+    auto* ptr = node.next;
+    while (ptr != nullptr) {
+      vec.push_back(ptr->val);
+      ptr = ptr->next;
     }
     return std::format_to(ctx.out(), "{}", vec);
   }

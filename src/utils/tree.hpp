@@ -5,8 +5,22 @@
 #include <set>
 #include <string>
 
-#define SafeTree TreeNode __attribute__((__cleanup__(clean_up)))
+#define SafeTree TreeNode __attribute__((__cleanup__(clean_up_tree)))
 
+/**
+ * Helper struct for working with LeetCode's tree questions.
+ * The struct definition is exactly the same as official one, with some helper function to make life easier.
+ *
+ * The "SafeTree" macro will auto release memory.
+ * Make sure every node is declared using the macro.
+ *
+ * We can't use smart pointer here because the solution then will not be able to be submitted (yikes).
+ *
+ * Usage:
+ * SafeTree* a = new TreeNode();
+ * SafeTree* b = new TreeNode();
+ * EXPECT_EQ(*a, *b);
+ */
 struct TreeNode {
   int       val;
   TreeNode* left;
@@ -28,10 +42,17 @@ struct TreeNode {
         (right != nullptr && other.right == nullptr)) {
       return false;
     }
-    if (left == nullptr && right == nullptr) {
+    if (left == nullptr && right == nullptr && other.left == nullptr && other.right == nullptr) {
       return true;
     }
-    return (*left == *other.left) && (*right == *other.right);
+    bool flag;
+    if (left != nullptr) {
+      flag = *left == *other.left;
+    }
+    if (right != nullptr) {
+      flag = *right == *other.right;
+    }
+    return flag;
   }
 
   size_t height() const {
@@ -50,16 +71,16 @@ struct TreeNode {
   }
 
   std::string graphviz() const {
-    auto visited = std::set<TreeNode*>{};
     auto result  = std::string{"digraph G {"};
+    auto visited = std::set<TreeNode const*>{};
+    auto queue   = std::queue<TreeNode const*>{};
 
-    visited.insert(const_cast<TreeNode*>(this));
-    auto q = std::queue<TreeNode const*>{};
-    q.push(this);
+    visited.insert(this);
+    queue.push(this);
 
-    while (!q.empty()) {
-      auto const* node = q.front();
-      q.pop();
+    while (!queue.empty()) {
+      auto const* node = queue.front();
+      queue.pop();
 
       result += std::format("\"{}\" [label=\"{}\"];", static_cast<void const*>(node), node->val);
 
@@ -70,7 +91,7 @@ struct TreeNode {
             static_cast<void const*>(node->left)
         );
         if (visited.find(node->left) == visited.end()) {
-          q.push(node->left);
+          queue.push(node->left);
           visited.insert(node->left);
         }
       }
@@ -82,7 +103,7 @@ struct TreeNode {
             static_cast<void const*>(node->right)
         );
         if (visited.find(node->right) == visited.end()) {
-          q.push(node->right);
+          queue.push(node->right);
           visited.insert(node->right);
         }
       }
@@ -94,16 +115,7 @@ struct TreeNode {
   }
 };
 
-static inline void delete_nodes(TreeNode* node) {
-  if (node == nullptr) {
-    return;
-  }
-  delete_nodes(node->left);
-  delete_nodes(node->right);
-  delete node;
-}
-
-static inline void clean_up(TreeNode** node) {
-  delete_nodes(*node);
-  *node= nullptr;
+static inline void clean_up_tree(TreeNode** node) {
+  delete *node;
+  *node = nullptr;
 }

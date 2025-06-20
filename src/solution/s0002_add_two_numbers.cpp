@@ -83,23 +83,23 @@ public:
 TEST(Test, s0002_add_two_numbers) {
   auto s = Solution{};
   {
-    SafeList* a = make_nodes({2, 4, 3});
-    SafeList* b = make_nodes({5, 6, 4});
-    SafeList* c = make_nodes({7, 0, 8});
+    SafeList* a = make_list({2, 4, 3});
+    SafeList* b = make_list({5, 6, 4});
+    SafeList* c = make_list({7, 0, 8});
     SafeList* d = s.addTwoNumbers(a, b);
     EXPECT_EQ(*c, *d);
   }
   {
-    SafeList* a = make_nodes({0});
-    SafeList* b = make_nodes({0});
-    SafeList* c = make_nodes({0});
+    SafeList* a = make_list({0});
+    SafeList* b = make_list({0});
+    SafeList* c = make_list({0});
     SafeList* d = s.addTwoNumbers(a, b);
     EXPECT_EQ(*c, *d);
   }
   {
-    SafeList* a = make_nodes({9, 9, 9, 9, 9, 9, 9});
-    SafeList* b = make_nodes({9, 9, 9, 9});
-    SafeList* c = make_nodes({8, 9, 9, 9, 0, 0, 0, 1});
+    SafeList* a = make_list({9, 9, 9, 9, 9, 9, 9});
+    SafeList* b = make_list({9, 9, 9, 9});
+    SafeList* c = make_list({8, 9, 9, 9, 0, 0, 0, 1});
     SafeList* d = s.addTwoNumbers(a, b);
     EXPECT_EQ(*c, *d);
   }
