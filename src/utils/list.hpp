@@ -19,7 +19,7 @@
  * EXPECT_EQ(list->val , list->val);
  *
  * SafeList* null_list = make_list({});
- * Expect_EQ(null_list, nullptr);
+ * EXPECT_EQ(null_list, nullptr);
  *
  * SafeList* list2 = make_list({1});
  * list2->next = new ListNode(2);
