@@ -35,9 +35,11 @@ debug ARG="": build
     TARGET="{{ARG}}"
   fi
   ID=$(printf "s%04d" "$((10#$TARGET))")
-  FUNC=$(find build/src/Debug -name "$ID*" -type f -exec nm -C {} \; | grep -Po '(?<=W Solution::)[a-zA-Z_]+' | tail -n 1)
-  echo "Breakpoint: $FUNC"
-  find build/src/Debug -name "$ID*" -exec gdb {} -ex "b $FUNC" \;
+  SRC=$(find src/solution -name "$ID*.cpp" -type f)
+  FUNC=$(grep -Po '(?<=__DEBUG_FUNCTION\<).+(?=\>__)' "$SRC")
+  EXE=$(find build/src/Debug -name "$ID*" -type f)
+  echo "Breakpoint: $SRC:$FUNC"
+  gdb "$EXE" -ex "b $SRC:$FUNC"
 
 clean:
   rm -rf .cache build

@@ -1,4 +1,5 @@
 /******************************
+__DEBUG_FUNCTION<myAtoi>__
 Question 8: String to Integer (atoi)
 Difficulty: Med.
 

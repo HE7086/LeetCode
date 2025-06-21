@@ -1,4 +1,5 @@
 /******************************
+__DEBUG_FUNCTION<longestPalindrome>__
 Question 5: Longest Palindromic Substring
 Difficulty: Med.
 

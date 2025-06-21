@@ -1,4 +1,5 @@
 /******************************
+__DEBUG_FUNCTION<longestCommonPrefix>__
 Question 14: Longest Common Prefix
 Difficulty: Easy
 

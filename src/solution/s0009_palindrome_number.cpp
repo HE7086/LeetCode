@@ -1,4 +1,5 @@
 /******************************
+__DEBUG_FUNCTION<isPalindrome>__
 Question 9: Palindrome Number
 Difficulty: Easy
 

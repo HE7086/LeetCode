@@ -35,6 +35,7 @@ query questionData($titleSlug: String!) {
   }
 })";
 static constexpr auto const CODE_TEMPLATE         = R"(/******************************
+__DEBUG_FUNCTION<{}>__
 Question {}: {}
 Difficulty: {}
 
@@ -106,10 +107,9 @@ static std::string add_return(std::string_view type, std::string code_snippet) {
   return code_snippet;
 }
 
-static std::string get_code_snippet(json const& question_data) {
-  auto const meta_data   = json::parse(question_data["metaData"].get<std::string>());
+static std::string get_code_snippet(json const& meta_data, json const& snippets) {
   auto const return_type = meta_data["return"]["type"].get<std::string>();
-  for (auto const& snippet : question_data["codeSnippets"]) {
+  for (auto const& snippet : snippets) {
     if (snippet["lang"] == "C++") {
       return add_return(return_type, snippet["code"]);
     }
@@ -129,8 +129,8 @@ static std::string parse_question_desc(std::string desc) {
 
   // unescape characters
   static auto const map = std::map<std::string_view, std::string_view>{
-      {"&nbsp;",  " "  },
-      {"\u200b",  " "  },
+      {"&nbsp;",  " " },
+      {"\u200b",  " " },
       {"&lt;",    "<" },
       {"&gt;",    ">" },
       {"&amp;",   "&" },
@@ -151,31 +151,29 @@ static std::string parse_question_desc(std::string desc) {
   return desc;
 }
 
-static std::string generate_includes(json const& question_data) {
-  auto const meta_data = json::parse(question_data["metaData"].get<std::string_view>());
-
+static std::string generate_includes(json const& meta_data) {
   auto has_vector = false;
   auto has_string = false;
   auto has_list   = false;
   auto has_tree   = false;
 
   auto process_type = [&](std::string_view type) {
-    if (type.find("ListNode") != std::string_view::npos) {
+    if (type.contains("ListNode")) {
       has_list = true;
     }
-    if (type.find("TreeNode") != std::string_view::npos) {
+    if (type.contains("TreeNode")) {
       has_tree = true;
     }
-    if (type.find("[]") != std::string_view::npos) {
+    if (type.contains("[]")) {
       has_vector = true;
     }
-    if (type.find("list<") != std::string_view::npos) {
+    if (type.contains("list<")) {
       has_vector = true;
     }
-    if (type.find("String") != std::string_view::npos) {
+    if (type.contains("String")) {
       has_string = true;
     }
-    if (type.find("string") != std::string_view::npos) {
+    if (type.contains("string")) {
       has_string = true;
     }
   };
@@ -278,19 +276,22 @@ int main(int argc, char* argv[]) {
   if (question_data.value("isPaidOnly", false)) {
     std::println(stderr, "Note: paid-only: {}: {}", question_id, title_slug);
   }
+  auto const meta_data = json::parse(question_data["metaData"].get<std::string>());
 
+  auto const debug_function = meta_data["name"].get<std::string>();
   auto const question_title = question_stat["question__title"].get<std::string>();
   auto const difficulty     = DIFFICULTY_MAP.at(question["difficulty"]["level"].get<int>());
   auto const question_desc  = parse_question_desc(question_data["content"]);
   auto const problem_url    = std::format("{}/{}", LEETCODE_PROBLEMS_URL, title_slug);
-  auto const includes       = generate_includes(question_data);
-  auto const code_snippet   = get_code_snippet(question_data);
+  auto const includes       = generate_includes(meta_data);
+  auto const code_snippet   = get_code_snippet(meta_data, question_data["codeSnippets"]);
 
   // write to solution folder
   auto solution = std::ofstream(solution_path);
   std::print(
       solution,
       CODE_TEMPLATE,
+      debug_function,
       question_id,
       question_title,
       difficulty,
