@@ -39,7 +39,7 @@ debug ARG="": build
   FUNC=$(grep -Po '(?<=__DEBUG_FUNCTION\<).+(?=\>__)' "$SRC")
   EXE=$(find build/src/Debug -name "$ID*" -type f)
   echo "Breakpoint: $SRC:$FUNC"
-  gdb "$EXE" -ex "b $SRC:$FUNC"
+  gdb "$EXE" -ex "b $SRC:$FUNC" -ex "r"
 
 clean:
   rm -rf .cache build
