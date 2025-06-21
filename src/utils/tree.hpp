@@ -45,7 +45,7 @@ struct TreeNode {
     if (left == nullptr && right == nullptr && other.left == nullptr && other.right == nullptr) {
       return true;
     }
-    bool flag;
+    bool flag = false;
     if (left != nullptr) {
       flag = *left == *other.left;
     }
