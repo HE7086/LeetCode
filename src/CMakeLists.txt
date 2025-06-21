@@ -62,7 +62,10 @@ target_link_libraries(fetcher PRIVATE
   nlohmann_json::nlohmann_json
   cpr::cpr
 )
-target_compile_options(fetcher PRIVATE -Wall -Wextra -Wpedantic -Werror -Wnrvo)
+target_compile_options(fetcher PRIVATE -Wall -Wextra -Wpedantic -Werror)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_compile_options(fetcher PRIVATE -Wnrvo)
+endif()
 set_property(TARGET fetcher PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
 set_property(TARGET fetcher PROPERTY POSITION_INDEPENDENT_CODE TRUE)
 set_property(TARGET fetcher PROPERTY EXCLUDE_FROM_ALL TRUE)
@@ -70,7 +73,10 @@ set_property(TARGET fetcher PROPERTY EXCLUDE_FROM_ALL TRUE)
 #==================== utils ====================
 
 add_executable(test_utils utils/test_utils.cpp)
-target_compile_options(test_utils PRIVATE -Wall -Wextra -Wpedantic -Werror -Wnrvo)
+target_compile_options(test_utils PRIVATE -Wall -Wextra -Wpedantic -Werror)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_compile_options(test_utils PRIVATE -Wnrvo)
+endif()
 target_compile_options(test_utils PRIVATE $<$<CONFIG:Debug>:-fsanitize=address;-fsanitize=undefined>)
 target_link_options(test_utils PRIVATE $<$<CONFIG:Debug>:-fsanitize=address;-fsanitize=undefined>)
 target_link_libraries(test_utils PRIVATE GTest::GTest GTest::Main)
