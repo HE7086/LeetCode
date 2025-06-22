@@ -1,5 +1,6 @@
 #pragma once
 #include <format>
+#include <ostream>
 #include <vector>
 #include <utility>
 
@@ -115,3 +116,14 @@ public:
     return std::format_to(ctx.out(), "{}", vec);
   }
 };
+
+static inline std::ostream& operator<<(std::ostream& s, ListNode const& node) {
+  s << "[";
+  s << node.val;
+  for (auto* ptr = node.next; ptr != nullptr; ptr = ptr->next) {
+    s << ", ";
+    s << ptr->val;
+  }
+    s << "]";
+  return s;
+}
