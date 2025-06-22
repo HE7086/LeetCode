@@ -35,5 +35,6 @@ My solution to LeetCode algorithm problems in C++. Together with a question fetc
 
 ## Note
 * Only tested on Linux.
-* Really wished to make things working with C++20 modules. However too many things broke and `clangd` didn't even support modules yet.
 * No submission support.
+* The solution here are mostly written in c++23 style. Some of the questions (e.g. `ListNode*`) are not suitable for modern c++, therefore helper classes are provided in `utils` for convenience.
+* Really wished to make things working with C++20 modules. However too many things broke and `clangd` didn't even support modules yet.
