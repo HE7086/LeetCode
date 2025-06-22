@@ -34,7 +34,6 @@ Follow up: Could you do this in one pass?
 URL: https://leetcode.com/problems/remove-nth-node-from-end-of-list
 ******************************/
 
-#include <format>
 #include <gtest/gtest.h>
 #include <utils/list.hpp>
 
@@ -108,12 +107,12 @@ TEST(Test, s0019_remove_nth_node_from_end_of_list) {
     auto [a, as] = make_list_owned({1, 2, 3, 4, 5});
     auto [b, bs] = make_list_owned({1, 2, 3, 5});
     s.removeNthFromEnd(a, 2);
-    EXPECT_EQ(format("{}", *b), format("{}", *a));
+    EXPECT_EQ(*b, *a);
   }
   {
     auto [a, as] = make_list_owned({1, 2});
     auto [b, bs] = make_list_owned({1});
     s.removeNthFromEnd(a, 1);
-    EXPECT_EQ(format("{}", *b), format("{}", *a));
+    EXPECT_EQ(*b, *a);
   }
 }
