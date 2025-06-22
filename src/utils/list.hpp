@@ -1,6 +1,7 @@
 #pragma once
 #include <format>
 #include <vector>
+#include <utility>
 
 #define SafeList ListNode __attribute__((__cleanup__(clean_up_list)))
 
@@ -24,6 +25,12 @@
  * SafeList* list2 = make_list({1});
  * list2->next = new ListNode(2);
  * EXPECT_EQ("[1, 2]", std::format("{}", *list2));
+ *
+ * Alternatively use a owned version.
+ * This way all nodes are stored in a vector (as), so no manual memory management is needed.
+ * auto [a, as] = make_list_owned({1, 2, 3});
+ * EXPECT_EQ(1, a->val);
+ * EXPECT_EQ(2, a->next->val);
  */
 struct ListNode {
   int       val;
@@ -45,6 +52,23 @@ struct ListNode {
     return true;
   }
 };
+
+static inline std::pair<ListNode*, std::vector<ListNode>> make_list_owned(std::initializer_list<int> values) {
+  auto storage = std::vector<ListNode>{};
+  if (values.size() == 0) {
+    return {nullptr, std::move(storage)};
+  }
+
+  storage.reserve(values.size());
+  for (int val : values) {
+    storage.emplace_back(val);
+  }
+  for (size_t i = 1; i < storage.size(); i++) {
+    storage[i - 1].next = &storage[i];
+  }
+
+  return {&storage.front(), std::move(storage)};
+}
 
 static inline ListNode* make_list(std::initializer_list<int> list) {
   if (list.size() == 0) {

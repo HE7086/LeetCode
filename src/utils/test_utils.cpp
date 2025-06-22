@@ -21,7 +21,31 @@ TEST(Test_utils, list) {
 
     EXPECT_NE(*a, *b);
 
-    b->next->next = make_list({3});
+    ListNode* c = make_list({3});
+    b->next->next = c;
+
+    EXPECT_EQ(*a, *b);
+    EXPECT_EQ("[1, 2, 3]", std::format("{}", *a));
+  }
+}
+TEST(Test_utils, list_owned) {
+  {
+    auto [a, as] = make_list_owned({});
+    EXPECT_EQ(a, nullptr);
+  }
+  {
+    auto [a, as] = make_list_owned({1});
+    auto [b, bs] = make_list_owned({2});
+    EXPECT_NE(*a, *b);
+  }
+  {
+    auto [a, as] = make_list_owned({1, 2, 3});
+    auto [b, bs] = make_list_owned({1, 2});
+
+    EXPECT_NE(*a, *b);
+
+    auto [c, cs] = make_list_owned({3});
+    b->next->next = c;
 
     EXPECT_EQ(*a, *b);
     EXPECT_EQ("[1, 2, 3]", std::format("{}", *a));
