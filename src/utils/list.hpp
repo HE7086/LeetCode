@@ -1,8 +1,8 @@
 #pragma once
 #include <format>
 #include <ostream>
-#include <vector>
 #include <utility>
+#include <vector>
 
 #define SafeList ListNode __attribute__((__cleanup__(clean_up_list)))
 
@@ -54,7 +54,8 @@ struct ListNode {
   }
 };
 
-static inline std::pair<ListNode*, std::vector<ListNode>> make_list_owned(std::initializer_list<int> values) {
+[[nodiscard]] static inline std::pair<ListNode*, std::vector<ListNode>>
+make_list_owned(std::initializer_list<int> values) {
   auto storage = std::vector<ListNode>{};
   if (values.size() == 0) {
     return {nullptr, std::move(storage)};
@@ -71,7 +72,7 @@ static inline std::pair<ListNode*, std::vector<ListNode>> make_list_owned(std::i
   return {&storage.front(), std::move(storage)};
 }
 
-static inline ListNode* make_list(std::initializer_list<int> list) {
+[[nodiscard]] static inline ListNode* make_list(std::initializer_list<int> list) {
   if (list.size() == 0) {
     return nullptr;
   }
@@ -126,6 +127,6 @@ static inline std::ostream& operator<<(std::ostream& s, ListNode const& node) {
     s << ", ";
     s << ptr->val;
   }
-    s << "]";
+  s << "]";
   return s;
 }
