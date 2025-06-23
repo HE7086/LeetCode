@@ -25,7 +25,7 @@ build-fetcher:
   cmake --build build --config "Release" --target fetcher
 
 fetch ARG="": build-fetcher
-  build/src/Release/fetcher {{ARG}}
+  build/src/fetcher/Release/fetcher {{ARG}}
 
 debug ARG="": build
   #!/bin/bash
