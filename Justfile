@@ -37,7 +37,7 @@ debug ARG="": build
   ID=$(printf "s%04d" "$((10#$TARGET))")
   SRC=$(find src/solution -name "$ID*.cpp" -type f)
   FUNC=$(grep -Po '(?<=__DEBUG_FUNCTION\<).+(?=\>__)' "$SRC")
-  EXE=$(find build/src/Debug -name "$ID*" -type f)
+  EXE=$(find build/src/solution/Debug -name "$ID*" -type f)
   echo "Breakpoint: $SRC:$FUNC"
   gdb "$EXE" -ex "b $SRC:$FUNC" -ex "r"
 
