@@ -100,18 +100,18 @@ public:
 TEST(Test, s0019_remove_nth_node_from_end_of_list) {
   auto s = Solution{};
   {
-    auto [a, as] = make_list_owned({1});
+    auto [a, _] = make_list_owned({1});
     EXPECT_EQ(nullptr, s.removeNthFromEnd(a, 1));
   }
   {
-    auto [a, as] = make_list_owned({1, 2, 3, 4, 5});
-    auto [b, bs] = make_list_owned({1, 2, 3, 5});
+    auto [a, _] = make_list_owned({1, 2, 3, 4, 5});
+    auto [b, _] = make_list_owned({1, 2, 3, 5});
     s.removeNthFromEnd(a, 2);
     EXPECT_EQ(*b, *a);
   }
   {
-    auto [a, as] = make_list_owned({1, 2});
-    auto [b, bs] = make_list_owned({1});
+    auto [a, _] = make_list_owned({1, 2});
+    auto [b, _] = make_list_owned({1});
     s.removeNthFromEnd(a, 1);
     EXPECT_EQ(*b, *a);
   }
