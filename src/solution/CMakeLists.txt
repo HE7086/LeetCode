@@ -1,0 +1,20 @@
+file(GLOB SOURCE_FILES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+foreach(source_file ${SOURCE_FILES})
+  get_filename_component(exe ${source_file} NAME_WE)
+  string(REGEX MATCH "s([0-9]+)_.*" _ ${exe})
+  add_executable(${exe} ${source_file})
+  target_link_libraries(${exe} PRIVATE GTest::GTest GTest::Main)
+  target_include_directories(${exe} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
+  gtest_discover_tests(${exe})
+
+  target_compile_options(${exe} PRIVATE -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-unused-parameter)
+  target_compile_options(${exe} PRIVATE $<$<CONFIG:Debug>:-fsanitize=address;-fsanitize=undefined>)
+  target_link_options(${exe} PRIVATE $<$<CONFIG:Debug>:-fsanitize=address;-fsanitize=undefined>)
+
+  if(NOT DEFINED ENV{GITHUB_ACTIONS})
+    # GitHub actions' g++ is too old for -Wnrvo as of now
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+      target_compile_options(${exe} PRIVATE -Wnrvo)
+    endif()
+  endif()
+endforeach()

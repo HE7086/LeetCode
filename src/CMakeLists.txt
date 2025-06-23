@@ -11,26 +11,7 @@ if(NOT GTest_FOUND)
   FetchContent_MakeAvailable(googletest)
 endif()
 
-file(GLOB SOURCE_FILES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/solution/*.cpp")
-foreach(source_file ${SOURCE_FILES})
-  get_filename_component(exe ${source_file} NAME_WE)
-  string(REGEX MATCH "s([0-9]+)_.*" _ ${exe})
-  add_executable(${exe} ${source_file})
-  target_link_libraries(${exe} PRIVATE GTest::GTest GTest::Main)
-  target_include_directories(${exe} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-  gtest_discover_tests(${exe})
-
-  target_compile_options(${exe} PRIVATE -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-unused-parameter)
-  target_compile_options(${exe} PRIVATE $<$<CONFIG:Debug>:-fsanitize=address;-fsanitize=undefined>)
-  target_link_options(${exe} PRIVATE $<$<CONFIG:Debug>:-fsanitize=address;-fsanitize=undefined>)
-
-  if(NOT DEFINED ENV{GITHUB_ACTIONS})
-    # GitHub actions' g++ is too old for -Wnrvo as of now
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-      target_compile_options(${exe} PRIVATE -Wnrvo)
-    endif()
-  endif()
-endforeach()
+add_subdirectory(solution)
 
 #==================== fetcher ====================
 
@@ -57,27 +38,8 @@ if(NOT cpr_FOUND)
   FetchContent_MakeAvailable(cpr)
 endif()
 
-add_executable(fetcher fetcher.cpp)
-target_link_libraries(fetcher PRIVATE
-  nlohmann_json::nlohmann_json
-  cpr::cpr
-)
-target_compile_options(fetcher PRIVATE -Wall -Wextra -Wpedantic -Werror)
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  target_compile_options(fetcher PRIVATE -Wnrvo)
-endif()
-set_property(TARGET fetcher PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
-set_property(TARGET fetcher PROPERTY POSITION_INDEPENDENT_CODE TRUE)
-set_property(TARGET fetcher PROPERTY EXCLUDE_FROM_ALL TRUE)
+add_subdirectory(fetcher)
 
 #==================== utils ====================
 
-add_executable(test_utils utils/test_utils.cpp)
-target_compile_options(test_utils PRIVATE -Wall -Wextra -Wpedantic -Werror)
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  target_compile_options(test_utils PRIVATE -Wnrvo)
-endif()
-target_compile_options(test_utils PRIVATE $<$<CONFIG:Debug>:-fsanitize=address;-fsanitize=undefined>)
-target_link_options(test_utils PRIVATE $<$<CONFIG:Debug>:-fsanitize=address;-fsanitize=undefined>)
-target_link_libraries(test_utils PRIVATE GTest::GTest GTest::Main)
-gtest_discover_tests(test_utils)
+add_subdirectory(utils)

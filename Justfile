@@ -14,7 +14,7 @@ test *ARGS="": build
 check ARG="": build
   #!/bin/bash
   if [ -z "{{ARG}}" ]; then
-    TARGET=$(ls -t1 src/solution | head -n 1 | grep -Po '(?<=^s)([0-9]+)')
+    TARGET=$(ls -t1 src/solution | grep -P '.*\.cpp' | head -n 1 | grep -Po '(?<=^s)([0-9]+)')
   else
     TARGET="{{ARG}}"
   fi
