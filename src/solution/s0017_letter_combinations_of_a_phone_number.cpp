@@ -107,23 +107,25 @@ using namespace std;
  * and slightly greater for space, due to the recursive call stack.
  */
 class Solution {
-  static constexpr vector<char> letters(char c) {
-    [[assume('1' < c && c < ':')]];
-    switch (c) {
-      case '2': return {'a', 'b', 'c'};
-      case '3': return {'d', 'e', 'f'};
-      case '4': return {'g', 'h', 'i'};
-      case '5': return {'j', 'k', 'l'};
-      case '6': return {'m', 'n', 'o'};
-      case '7': return {'p', 'q', 'r', 's'};
-      case '8': return {'t', 'u', 'v'};
-      case '9': return {'w', 'x', 'y', 'z'};
-      default: unreachable();
-    }
-  }
-
 public:
   vector<string> letterCombinations(string const& digits) {
+    // Need to put this lambda inside the function,
+    // or it causes ICE on gcc 14
+    static constexpr auto letters = [](char c) -> vector<char> {
+      [[assume('1' < c && c < ':')]];
+      switch (c) {
+        case '2': return {'a', 'b', 'c'};
+        case '3': return {'d', 'e', 'f'};
+        case '4': return {'g', 'h', 'i'};
+        case '5': return {'j', 'k', 'l'};
+        case '6': return {'m', 'n', 'o'};
+        case '7': return {'p', 'q', 'r', 's'};
+        case '8': return {'t', 'u', 'v'};
+        case '9': return {'w', 'x', 'y', 'z'};
+        default: unreachable();
+      }
+    };
+
     auto ans = vector<string>{};
     if (digits.empty()) {
       return ans;
@@ -142,6 +144,13 @@ public:
       }
 
       for (char l : letters(digits[index])) {
+        //          ^
+        //            "this" pointer here refers to the lambda
+        //            when the letter function is a member of the class Solution,
+        //            the compiler tries to find this->letters
+        //            and causes an internal compiler error.
+        //            (seems to be fixed in gcc-15)
+
         // append a letter and go 1 level deeper
         buf.push_back(l);
         self(index + 1);

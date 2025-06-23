@@ -102,6 +102,7 @@ static inline void clean_up_list(ListNode** node) {
   delete_list_nodes(*node);
 }
 
+#if __cpp_lib_format_ranges >= 202207L
 template<>
 struct std::formatter<ListNode> : std::formatter<std::vector<int>> {
 public:
@@ -116,6 +117,7 @@ public:
     return std::format_to(ctx.out(), "{}", vec);
   }
 };
+#endif
 
 static inline std::ostream& operator<<(std::ostream& s, ListNode const& node) {
   s << "[";
