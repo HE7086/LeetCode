@@ -1,4 +1,4 @@
-add_executable(fetcher main.cpp question.cpp)
+add_executable(fetcher main.cpp question.cpp problem.cpp)
 target_link_libraries(fetcher PRIVATE
   nlohmann_json::nlohmann_json
   cpr::cpr

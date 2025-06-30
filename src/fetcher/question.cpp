@@ -1,9 +1,9 @@
 #include "question.hpp"
+#include "problem.hpp"
 
 #include <algorithm>
 #include <cstdint>
 #include <format>
-#include <fstream>
 #include <print>
 #include <regex>
 #include <string_view>
@@ -12,12 +12,8 @@
 #include <cpr/cpr.h>
 #include <cpr/response.h>
 
-namespace fs = std::filesystem;
 using json = nlohmann::json;
 
-namespace {
-
-static constexpr auto const LEETCODE_API_URL      = "https://leetcode.com/api/problems/algorithms";
 static constexpr auto const LEETCODE_GRAPHQL_URL  = "https://leetcode.com/graphql";
 static constexpr auto const LEETCODE_PROBLEMS_URL = "https://leetcode.com/problems";
 static constexpr auto const GRAPHQL_QUERY         = R"(
@@ -34,35 +30,7 @@ query questionData($titleSlug: String!) {
   }
 })";
 
-json get_problem_data(int64_t id) {
-  auto const cache_path = fs::current_path() / ".cache" / "problems.json";
-
-  if (!fs::exists(cache_path.parent_path())) {
-    fs::create_directory(cache_path.parent_path());
-  }
-
-  if (!fs::exists(cache_path)) {
-    auto const r = cpr::Get(cpr::Url{LEETCODE_API_URL});
-    std::println(stderr, "Downloaded {} bytes in {} with status code {}", r.downloaded_bytes, r.elapsed, r.status_code);
-
-    auto cache = std::ofstream(cache_path);
-    std::print(cache, "{}", r.text);
-  }
-
-  auto       cache    = std::ifstream(cache_path);
-  auto const problems = json::parse(cache)["stat_status_pairs"];
-
-  auto const problem_data = std::find_if(problems.begin(), problems.end(), [id](auto const& p) {
-    return p["stat"]["question_id"] == id;
-  });
-  if (problem_data == problems.end()) {
-    std::println(stderr, "Question {} not found.", id);
-    exit(1);
-  }
-  return *problem_data;
-}
-
-json get_question_data(std::string_view title_slug) {
+static json get_question_data(std::string_view title_slug) {
   auto const query = json{
       {"query",         GRAPHQL_QUERY              },
       {"variables",     {{"titleSlug", title_slug}}},
@@ -80,10 +48,8 @@ json get_question_data(std::string_view title_slug) {
   return json::parse(r.text)["data"]["question"];
 }
 
-}; // namespace
-
 question question::get_by_id(int64_t id) {
-  auto problem_data  = get_problem_data(id);
+  auto problem_data  = problem{}[id];
   auto title_slug    = problem_data["stat"]["question__title_slug"].get<std::string>();
   auto question_data = get_question_data(title_slug);
 
