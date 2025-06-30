@@ -5,16 +5,14 @@
 
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
-
 class question {
-  int64_t id;
-  json    problem_data;
-  json    question_data;
-  json    meta_data;
+  int64_t        id;
+  nlohmann::json problem_data;
+  nlohmann::json question_data;
+  nlohmann::json meta_data;
 
 public:
-  question(int64_t id, json problem_data, json question_data);
+  question(int64_t id, nlohmann::json problem_data, nlohmann::json question_data);
   [[nodiscard]] static question get_by_id(int64_t id);
 
   [[nodiscard]] std::string get_function() const;

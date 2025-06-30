@@ -13,6 +13,7 @@
 #include <cpr/response.h>
 
 namespace fs = std::filesystem;
+using json = nlohmann::json;
 
 namespace {
 
