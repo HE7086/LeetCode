@@ -44,8 +44,7 @@ using namespace std;
  */
 class Solution {
   vector<int> computeLPSArray(string const& pattern) {
-    auto lps = vector<int>{};
-    lps.reserve(pattern.length());
+    auto lps = vector<int>(pattern.length(), 0);
 
     size_t length = 0;
     size_t i      = 1;
