@@ -25,7 +25,13 @@ build-fetcher:
   cmake --build build --config "Release" --target fetcher
 
 fetch ARG="": build-fetcher
-  build/src/fetcher/Release/fetcher {{ARG}}
+  #!/bin/bash
+  if [ -z "{{ARG}}" ]; then
+    TARGET="$((10#$(ls -t1 src/solution | grep -P '.*\.cpp' | head -n 1 | grep -Po '(?<=^s)([0-9]+)')+1))"
+  else
+    TARGET="{{ARG}}"
+  fi
+  build/src/fetcher/Release/fetcher "$TARGET"
 
 debug ARG="": build
   #!/bin/bash
