@@ -22,7 +22,7 @@ endif()
 
 find_package(nlohmann_json)
 if(NOT nlohmann_json_FOUND)
-  FetchContent_Declare(json
+  FetchContent_Declare(json SYSTEM
     GIT_REPOSITORY https://github.com/nlohmann/json.git
     GIT_TAG v3.12.0
   )
@@ -31,7 +31,7 @@ endif()
 
 find_package(cpr)
 if(NOT cpr_FOUND)
-  FetchContent_Declare(cpr
+  FetchContent_Declare(cpr SYSTEM
     GIT_REPOSITORY https://github.com/libcpr/cpr.git
     GIT_TAG 1.11.2
   )
