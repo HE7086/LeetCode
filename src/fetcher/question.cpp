@@ -62,7 +62,11 @@ question::question(int64_t id, json problem_data, json question_data)
 }
 
 std::string question::get_function() const {
-  return meta_data["name"];
+  if (meta_data.contains("name")) {
+    return meta_data["name"];
+  }
+  std::println(stderr, "metadata does not contain name, using classname instead");
+  return meta_data["classname"];
 }
 
 std::string question::get_title() const {
