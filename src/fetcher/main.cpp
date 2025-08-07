@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
   auto const q    = question::get_by_id(id);
   auto const path = fs::current_path() / "src" / "solution" / (q.get_solution_id() + ".cpp");
 
-  if (fs::exists(path)) {
+  if (fs::exists(path) && !fs::is_empty(path)) {
     std::println(stderr, "{} already initialized! Skipping...", q.get_solution_id());
     return 0;
   }
