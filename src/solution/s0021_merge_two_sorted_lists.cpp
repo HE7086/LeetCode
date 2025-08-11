@@ -86,20 +86,20 @@ public:
 TEST(Test, s0021_merge_two_sorted_lists) {
   auto s = Solution{};
   {
-    auto [a, _] = make_list_owned({1, 2, 4});
-    auto [b, _] = make_list_owned({1, 3, 4});
-    auto [c, _] = make_list_owned({1, 1, 2, 3, 4, 4});
+    auto [a, _] = ListNode::make_list_owned({1, 2, 4});
+    auto [b, _] = ListNode::make_list_owned({1, 3, 4});
+    auto [c, _] = ListNode::make_list_owned({1, 1, 2, 3, 4, 4});
     EXPECT_EQ(*c, *s.mergeTwoLists(a, b));
   }
   {
-    auto [a, _] = make_list_owned({});
-    auto [b, _] = make_list_owned({});
+    auto [a, _] = ListNode::make_list_owned({});
+    auto [b, _] = ListNode::make_list_owned({});
     EXPECT_EQ(nullptr, s.mergeTwoLists(a, b));
   }
   {
-    auto [a, _] = make_list_owned({});
-    auto [b, _] = make_list_owned({0});
-    auto [c, _] = make_list_owned({0});
+    auto [a, _] = ListNode::make_list_owned({});
+    auto [b, _] = ListNode::make_list_owned({0});
+    auto [c, _] = ListNode::make_list_owned({0});
     EXPECT_EQ(*c, *s.mergeTwoLists(a, b));
   }
 }

@@ -96,28 +96,28 @@ public:
 TEST(Test, s0025_reverse_nodes_in_k_group) {
   auto s = Solution{};
   {
-    auto [a, _] = make_list_owned({1, 2});
-    auto [b, _] = make_list_owned({2, 1});
+    auto [a, _] = ListNode::make_list_owned({1, 2});
+    auto [b, _] = ListNode::make_list_owned({2, 1});
     EXPECT_EQ(*b, *s.reverseKGroup(a, 2));
   }
   {
-    auto [a, _] = make_list_owned({1, 2, 3});
-    auto [b, _] = make_list_owned({2, 1, 3});
+    auto [a, _] = ListNode::make_list_owned({1, 2, 3});
+    auto [b, _] = ListNode::make_list_owned({2, 1, 3});
     EXPECT_EQ(*b, *s.reverseKGroup(a, 2));
   }
   {
-    auto [a, _] = make_list_owned({1, 2, 3});
-    auto [b, _] = make_list_owned({3, 2, 1});
+    auto [a, _] = ListNode::make_list_owned({1, 2, 3});
+    auto [b, _] = ListNode::make_list_owned({3, 2, 1});
     EXPECT_EQ(*b, *s.reverseKGroup(a, 3));
   }
   {
-    auto [a, _] = make_list_owned({1, 2, 3, 4, 5});
-    auto [b, _] = make_list_owned({2, 1, 4, 3, 5});
+    auto [a, _] = ListNode::make_list_owned({1, 2, 3, 4, 5});
+    auto [b, _] = ListNode::make_list_owned({2, 1, 4, 3, 5});
     EXPECT_EQ(*b, *s.reverseKGroup(a, 2));
   }
   {
-    auto [a, _] = make_list_owned({1, 2, 3, 4, 5});
-    auto [b, _] = make_list_owned({3, 2, 1, 4, 5});
+    auto [a, _] = ListNode::make_list_owned({1, 2, 3, 4, 5});
+    auto [b, _] = ListNode::make_list_owned({3, 2, 1, 4, 5});
     EXPECT_EQ(*b, *s.reverseKGroup(a, 3));
   }
 }

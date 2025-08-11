@@ -52,39 +52,38 @@ struct ListNode {
     }
     return true;
   }
+
+  [[nodiscard]] static std::pair<ListNode*, std::vector<ListNode>> make_list_owned(std::initializer_list<int> values) {
+    auto storage = std::vector<ListNode>{};
+    if (values.size() == 0) {
+      return {nullptr, std::move(storage)};
+    }
+
+    storage.reserve(values.size());
+    for (int val : values) {
+      storage.emplace_back(val);
+    }
+    for (size_t i = 1; i < storage.size(); i++) {
+      storage[i - 1].next = &storage[i];
+    }
+
+    return {&storage.front(), std::move(storage)};
+  }
+
+  [[nodiscard]] static ListNode* make_list(std::initializer_list<int> list) {
+    if (list.size() == 0) {
+      return nullptr;
+    }
+    auto  it   = list.begin();
+    auto* head = new ListNode(*it++);
+    auto* ptr  = head;
+    for (; it != list.end(); ++it) {
+      ptr->next = new ListNode(*it);
+      ptr       = ptr->next;
+    }
+    return head;
+  }
 };
-
-[[nodiscard]] static inline std::pair<ListNode*, std::vector<ListNode>>
-make_list_owned(std::initializer_list<int> values) {
-  auto storage = std::vector<ListNode>{};
-  if (values.size() == 0) {
-    return {nullptr, std::move(storage)};
-  }
-
-  storage.reserve(values.size());
-  for (int val : values) {
-    storage.emplace_back(val);
-  }
-  for (size_t i = 1; i < storage.size(); i++) {
-    storage[i - 1].next = &storage[i];
-  }
-
-  return {&storage.front(), std::move(storage)};
-}
-
-[[nodiscard]] static inline ListNode* make_list(std::initializer_list<int> list) {
-  if (list.size() == 0) {
-    return nullptr;
-  }
-  auto  it   = list.begin();
-  auto* head = new ListNode(*it++);
-  auto* ptr  = head;
-  for (; it != list.end(); ++it) {
-    ptr->next = new ListNode(*it);
-    ptr       = ptr->next;
-  }
-  return head;
-}
 
 static inline void delete_list_nodes(ListNode* node) {
   if (node == nullptr) {

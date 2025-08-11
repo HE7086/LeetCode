@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <format>
+#include <initializer_list>
 #include <queue>
 #include <set>
 #include <string>
@@ -112,6 +113,45 @@ struct TreeNode {
     result += "}\n";
 
     return result;
+  }
+
+  [[nodiscard]] static std::pair<TreeNode*, std::vector<TreeNode>>
+  make_tree_owned(std::initializer_list<std::optional<int>> values) {
+    if (values.size() == 0 || !values.begin()->has_value()) {
+      return {nullptr, {}};
+    }
+
+    auto nodes = std::vector<TreeNode>{values.begin()->value()};
+    nodes.reserve(values.size());
+
+    auto it    = next(values.begin());
+    auto queue = std::queue<TreeNode*>{};
+    queue.push(&nodes.front());
+
+    while (!queue.empty()) {
+      auto* node = queue.front();
+      queue.pop();
+
+      if (it != values.end()) {
+        if (it->has_value()) {
+          nodes.emplace_back(it->value());
+          node->left = &nodes.back();
+          queue.push(node->left);
+        }
+        it++;
+      }
+
+      if (it != values.end()) {
+        if (it->has_value()) {
+          nodes.emplace_back(it->value());
+          node->right = &nodes.back();
+          queue.push(node->right);
+        }
+        it++;
+      }
+    }
+
+    return {&nodes.front(), std::move(nodes)};
   }
 };
 

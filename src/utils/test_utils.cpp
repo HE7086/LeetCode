@@ -8,21 +8,21 @@
 
 TEST(Test_utils, list) {
   {
-    SafeList* a = make_list({});
+    SafeList* a = ListNode::make_list({});
     EXPECT_EQ(a, nullptr);
   }
   {
-    SafeList* a = make_list({1});
-    SafeList* b = make_list({2});
+    SafeList* a = ListNode::make_list({1});
+    SafeList* b = ListNode::make_list({2});
     EXPECT_NE(*a, *b);
   }
   {
-    SafeList* a = make_list({1, 2, 3});
-    SafeList* b = make_list({1, 2});
+    SafeList* a = ListNode::make_list({1, 2, 3});
+    SafeList* b = ListNode::make_list({1, 2});
 
     EXPECT_NE(*a, *b);
 
-    ListNode* c   = make_list({3});
+    ListNode* c   = ListNode::make_list({3});
     b->next->next = c;
 
     EXPECT_EQ(*a, *b);
@@ -38,21 +38,21 @@ TEST(Test_utils, list) {
 }
 TEST(Test_utils, list_owned) {
   {
-    auto [a, as] = make_list_owned({});
+    auto [a, as] = ListNode::make_list_owned({});
     EXPECT_EQ(a, nullptr);
   }
   {
-    auto [a, as] = make_list_owned({1});
-    auto [b, bs] = make_list_owned({2});
+    auto [a, as] = ListNode::make_list_owned({1});
+    auto [b, bs] = ListNode::make_list_owned({2});
     EXPECT_NE(*a, *b);
   }
   {
-    auto [a, as] = make_list_owned({1, 2, 3});
-    auto [b, bs] = make_list_owned({1, 2});
+    auto [a, as] = ListNode::make_list_owned({1, 2, 3});
+    auto [b, bs] = ListNode::make_list_owned({1, 2});
 
     EXPECT_NE(*a, *b);
 
-    auto [c, cs]  = make_list_owned({3});
+    auto [c, cs]  = ListNode::make_list_owned({3});
     b->next->next = c;
 
     EXPECT_EQ(*a, *b);

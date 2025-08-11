@@ -107,19 +107,19 @@ public:
 
 TEST(Test, s0148_sort_list) {
   {
-    auto [a, _] = make_list_owned({4, 2, 1, 3});
-    auto [b, _] = make_list_owned({1, 2, 3, 4});
+    auto [a, _] = ListNode::make_list_owned({4, 2, 1, 3});
+    auto [b, _] = ListNode::make_list_owned({1, 2, 3, 4});
     a           = Solution{}.sortList(a);
     EXPECT_EQ(*a, *b);
   }
   {
-    auto [a, _] = make_list_owned({-1, 5, 3, 4, 0});
-    auto [b, _] = make_list_owned({-1, 0, 3, 4, 5});
+    auto [a, _] = ListNode::make_list_owned({-1, 5, 3, 4, 0});
+    auto [b, _] = ListNode::make_list_owned({-1, 0, 3, 4, 5});
     a           = Solution{}.sortList(a);
     EXPECT_EQ(*a, *b);
   }
   {
-    auto [a, _] = make_list_owned({});
+    auto [a, _] = ListNode::make_list_owned({});
     a           = Solution{}.sortList(a);
     EXPECT_EQ(a, nullptr);
   }

@@ -149,29 +149,29 @@ TEST(Test, s0023_merge_k_sorted_lists) {
     EXPECT_EQ(nullptr, s.mergeKLists(input));
   }
   {
-    auto [a, _] = make_list_owned({});
+    auto [a, _] = ListNode::make_list_owned({});
     auto input   = vector<ListNode*>{a};
     EXPECT_EQ(nullptr, s.mergeKLists(input));
   }
   {
-    auto [a, _] = make_list_owned({});
-    auto [b, _] = make_list_owned({1});
-    auto [d, _] = make_list_owned({1});
+    auto [a, _] = ListNode::make_list_owned({});
+    auto [b, _] = ListNode::make_list_owned({1});
+    auto [d, _] = ListNode::make_list_owned({1});
     auto input   = vector<ListNode*>{a, b};
     EXPECT_EQ(*d, *s.mergeKLists(input));
   }
   {
-    auto [a, _] = make_list_owned({1});
-    auto [b, _] = make_list_owned({1, 2, 3});
-    auto [d, _] = make_list_owned({1, 1, 2, 3});
+    auto [a, _] = ListNode::make_list_owned({1});
+    auto [b, _] = ListNode::make_list_owned({1, 2, 3});
+    auto [d, _] = ListNode::make_list_owned({1, 1, 2, 3});
     auto input   = vector<ListNode*>{a, b};
     EXPECT_EQ(*d, *s.mergeKLists(input));
   }
   {
-    auto [a, _] = make_list_owned({1, 4, 5});
-    auto [b, _] = make_list_owned({1, 3, 4});
-    auto [c, _] = make_list_owned({2, 6});
-    auto [d, _] = make_list_owned({1, 1, 2, 3, 4, 4, 5, 6});
+    auto [a, _] = ListNode::make_list_owned({1, 4, 5});
+    auto [b, _] = ListNode::make_list_owned({1, 3, 4});
+    auto [c, _] = ListNode::make_list_owned({2, 6});
+    auto [d, _] = ListNode::make_list_owned({1, 1, 2, 3, 4, 4, 5, 6});
     auto input   = vector<ListNode*>{a, b, c};
     EXPECT_EQ(*d, *s.mergeKLists(input));
   }

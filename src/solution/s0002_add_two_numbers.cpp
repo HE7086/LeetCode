@@ -84,23 +84,23 @@ public:
 TEST(Test, s0002_add_two_numbers) {
   auto s = Solution{};
   {
-    auto [a, _] = make_list_owned({2, 4, 3});
-    auto [b, _] = make_list_owned({5, 6, 4});
-    auto [c, _] = make_list_owned({7, 0, 8});
+    auto [a, _] = ListNode::make_list_owned({2, 4, 3});
+    auto [b, _] = ListNode::make_list_owned({5, 6, 4});
+    auto [c, _] = ListNode::make_list_owned({7, 0, 8});
     SafeList* d = s.addTwoNumbers(a, b);
     EXPECT_EQ(*c, *d);
   }
   {
-    auto [a, _] = make_list_owned({0});
-    auto [b, _] = make_list_owned({0});
-    auto [c, _] = make_list_owned({0});
+    auto [a, _] = ListNode::make_list_owned({0});
+    auto [b, _] = ListNode::make_list_owned({0});
+    auto [c, _] = ListNode::make_list_owned({0});
     SafeList* d = s.addTwoNumbers(a, b);
     EXPECT_EQ(*c, *d);
   }
   {
-    auto [a, _] = make_list_owned({9, 9, 9, 9, 9, 9, 9});
-    auto [b, _] = make_list_owned({9, 9, 9, 9});
-    auto [c, _] = make_list_owned({8, 9, 9, 9, 0, 0, 0, 1});
+    auto [a, _] = ListNode::make_list_owned({9, 9, 9, 9, 9, 9, 9});
+    auto [b, _] = ListNode::make_list_owned({9, 9, 9, 9});
+    auto [c, _] = ListNode::make_list_owned({8, 9, 9, 9, 0, 0, 0, 1});
     SafeList* d = s.addTwoNumbers(a, b);
     EXPECT_EQ(*c, *d);
   }

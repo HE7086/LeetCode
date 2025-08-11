@@ -91,22 +91,22 @@ public:
 TEST(Test, s0024_swap_nodes_in_pairs) {
   auto s = Solution{};
   {
-    auto [a, _] = make_list_owned({});
+    auto [a, _] = ListNode::make_list_owned({});
     EXPECT_EQ(nullptr, s.swapPairs(a));
   }
   {
-    auto [a, _] = make_list_owned({1});
-    auto [b, _] = make_list_owned({1});
+    auto [a, _] = ListNode::make_list_owned({1});
+    auto [b, _] = ListNode::make_list_owned({1});
     EXPECT_EQ(*b, *s.swapPairs(a));
   }
   {
-    auto [a, _] = make_list_owned({1, 2, 3});
-    auto [b, _] = make_list_owned({2, 1, 3});
+    auto [a, _] = ListNode::make_list_owned({1, 2, 3});
+    auto [b, _] = ListNode::make_list_owned({2, 1, 3});
     EXPECT_EQ(*b, *s.swapPairs(a));
   }
   {
-    auto [a, _] = make_list_owned({1, 2, 3, 4});
-    auto [b, _] = make_list_owned({2, 1, 4, 3});
+    auto [a, _] = ListNode::make_list_owned({1, 2, 3, 4});
+    auto [b, _] = ListNode::make_list_owned({2, 1, 4, 3});
     EXPECT_EQ(*b, *s.swapPairs(a));
   }
 }

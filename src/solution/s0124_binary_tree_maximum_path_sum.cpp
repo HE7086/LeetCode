@@ -72,23 +72,11 @@ public:
 
 TEST(Test, s0124_binary_tree_maximum_path_sum) {
   {
-    SafeTree* a = new TreeNode(1);
-    SafeTree* b = new TreeNode(2);
-    SafeTree* c = new TreeNode(3);
-    a->left = b;
-    a->right = c;
+    auto [a, _] = TreeNode::make_tree_owned({1, 2, 3});
     EXPECT_EQ(6, Solution{}.maxPathSum(a));
   }
   {
-    SafeTree* a = new TreeNode(-10);
-    SafeTree* b = new TreeNode(9);
-    SafeTree* c = new TreeNode(20);
-    SafeTree* d = new TreeNode(15);
-    SafeTree* e = new TreeNode(7);
-    a->left = b;
-    a->right = c;
-    c->left = d;
-    c->right = e;
+    auto [a, _] = TreeNode::make_tree_owned({-10, 9, 20, {}, {}, 15, 7});
     EXPECT_EQ(42, Solution{}.maxPathSum(a));
   }
 }
