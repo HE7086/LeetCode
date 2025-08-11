@@ -46,10 +46,10 @@ public:
 #if __cpp_lib_ranges_concat >= 202403L
     auto val = views::concat(views::single(0), views::concat(heights, views::single(0)));
 #else
-    auto val    = vector<int>(nums.size() + 2);
+    auto val    = vector<int>(heights.size() + 2);
     val.front() = 0;
     val.back()  = 0;
-    copy(nums.begin(), nums.end(), next(val.begin()));
+    copy(heights.begin(), heights.end(), next(val.begin()));
 #endif
     int ans = 0;
 
