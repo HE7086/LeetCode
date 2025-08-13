@@ -27,6 +27,9 @@ Constraints:
 URL: https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string
 ******************************/
 
+#include <algorithm>
+#include <functional>
+#include <iterator>
 #include <string>
 #include <string_view>
 #include <gtest/gtest.h>
@@ -110,6 +113,18 @@ public:
     }
     return -1;
   }
+
+  int strStr_stl(string const& haystack, string const& needle) {
+#if __cpp_lib_boyer_moore_searcher >= 201603L
+    auto it = std::search(haystack.begin(), haystack.end(), std::boyer_moore_horspool_searcher{needle.begin(), needle.end()});
+    if (it != haystack.end()) {
+      return distance(haystack.begin(), it);
+    }
+    return -1;
+#else
+    return haystack.find(needle);
+#endif
+  }
 };
 
 //==============================================================================
@@ -120,4 +135,6 @@ TEST(Test, s0028_find_the_index_of_the_first_occurrence_in_a_string) {
   EXPECT_EQ(-1, s.strStr_trivial("leetcode", "leeto"));
   EXPECT_EQ(0, s.strStr("sadbutsad", "sad"));
   EXPECT_EQ(-1, s.strStr("leetcode", "leeto"));
+  EXPECT_EQ(0, s.strStr_stl("sadbutsad", "sad"));
+  EXPECT_EQ(-1, s.strStr_stl("leetcode", "leeto"));
 }
